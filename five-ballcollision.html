@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Ball collision</title>
+        <style>
+            * { padding:0; margin:0px;}
+            canvas {background: #eee; display: block; margin: 20px auto;}
+            div {
+                text-align: center;
+            }
+            button {
+                font-size: 30px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="mycanvas" width="640" height="480"></canvas>
+        <div class = "button_wrapper">
+            <button onclick="myFunction()">Reset</button>
+        </div>
+        <div class = "button_wrapper">
+            <select id="ballN">
+                <option value=2>2</option>
+                <option value=3>3</option>
+                <option value=4>4</option>
+                <option value=5>5</option>
+                <option value=6>6</option>
+                <option value=7>7</option>
+                <option value=8>8</option>
+                <option value=9>9</option>
+            </select>
+        </div>
+    </body>
+
+    <script>
+        function myFunction() {
+            location.reload()
+        }
+
+
+
+        window.addEventListener( "DOMContentLoaded", ()=> {
+
+        /* ==== キャンバス ==== */
+        const canvas = document.getElementById( "mycanvas" );
+        const context = canvas.getContext( "2d" );
+
+        /* ==== パラメータ ==== */
+        //----] ボールの個数
+        let N=6;
+        
+        //----] ボール半径
+        const Radius = 56;
+        //----] 速度の最大、最小
+        const Dmax = 2;
+        const Dmin = 1;
+
+        /* ==== ボールリスト ====*/
+        const balls = Array.from( new Array( N ), ()=> new Object() );
+        //----] ボール配置トライ限界
+        const maxtry = 100;
+        //----] 各ボールのパラメータを設定
+        balls.forEach( ( ball, idx )=> {
+            
+        //----]----] ボールを重ならないように配置
+            let count = 0;
+            do {
+                if( ++count>maxtry ) { break }
+                ball.x = Radius+( canvas.width-2*Radius )*Math.random();
+                ball.y = Radius+( canvas.height-2*Radius )*Math.random();
+            } 
+            while (
+                idx>0 &&
+                balls.slice( 0, idx ).
+            find( other => Math.sqrt( ( ball.x-other.x )**2+( ball.y-other.y )**2 )<2*Radius )
+            );
+            //----]----] 配置成功したボール
+            if( count<=maxtry ) {
+                //----]----]----] 速度
+                ball.dx = ( rdm => Dmin*( rdm>0 ? 1 : -1 )+( Dmax-Dmin )*rdm )( 2*Math.random()-1 );
+                ball.dy = ( rdm => Dmin*( rdm>0 ? 1 : -1 )+( Dmax-Dmin )*rdm )( 2*Math.random()-1 );
+                //----]----]----] 色
+                ball.color = ( rad => {
+                    const R = 255*Math.floor(Math.random()*2);
+                    const G = 255*Math.floor(Math.random()*2);
+                    const B = 255*Math.floor(Math.random()*2);
+                    var rndm = Math.floor(Math.random()*3)
+                    if(rndm == 0){
+                        return `RGB(255, 0, 0)`;
+                    }
+                    else if(rndm == 1){
+                        return `RGB(0, 255, 0)`;
+                    }
+                    else if(rndm == 2){
+                        return `RGB(0, 0, 255)`;
+                    }
+                }
+                )();
+            }
+        } );
+        function valueChange(){
+            N = element;
+        };
+        var element = document.getElementById("ballN");
+        element.addEventListener("change", valueChange);
+        
+        //----] 設定不可能だったボールを除去
+        const errIndex = balls.findIndex( ball => ball.dx===undefined );
+        if( errIndex>=0 ){ N = balls.length = errIndex }
+
+        /* ==== 関数：ボール描画 ==== */
+        function drawBall( n ) {
+            context.beginPath();
+            context.arc( balls[ n ].x, balls[ n ].y, Radius, 0, 2*Math.PI );
+            context.fillStyle = balls[ n ].color;
+            context.fill();
+        }
+
+        /* ==== 関数：アニメーション ==== */
+        function draw() {
+        //----] キャンバスをリセット
+            context.clearRect( 0, 0, canvas.width, canvas.height );
+        //----] ボール毎に処理
+            balls.forEach( ( ball, idx ) => {
+            //----]----] ボール描画
+                drawBall( idx );
+            //----]----] 壁との衝突
+                const [ left, right, top, bottom ] = [
+                    ball.x+ball.dx-Radius, ball.x+ball.dx+Radius,
+                    ball.y+ball.dy-Radius, ball.y+ball.dy+Radius
+                ];
+                ball.dx = ( left > 0 && right < canvas.width ) ? ball.dx : ( ball.dx *= -1 ) ;
+                ball.dy = ( top > 0 && bottom < canvas.height ) ? ball.dy : ( ball.dy *= -1 ) ;
+            //----]----] ボール同士の衝突｜衝突するボールを検索
+                if( idx+1<balls.length ){
+                    const after = balls.slice( idx+1 );
+                    const enemies = after.filter( enemy =>
+                        Math.sqrt( ( enemy.x+enemy.dx-ball.x-ball.dx )**2+( enemy.y+enemy.dy-ball.y-ball.dy )**2 ) <= 2*Radius
+                    );
+                    //----]----] ボール同士の衝突｜衝突による速度 dx, dy の変化
+                    if( enemies.length ) {
+                        enemies.forEach( enemy => {
+                            const tmp = {
+                                "ball": Object.assign( new Object(), ball ),
+                                "enemy": Object.assign( new Object(), enemy )
+                            };
+                            ball.dx += ( tmp.enemy.dx-tmp.ball.dx );
+                            ball.dy += ( tmp.enemy.dy-tmp.ball.dy );
+                            enemy.dx += ( tmp.ball.dx-tmp.enemy.dx );
+                            enemy.dy += ( tmp.ball.dy-tmp.enemy.dy );
+                            if(ball.color == `RGB(255, 0, 0)` && enemy.color == `RGB(0, 255, 0)`){
+                                ball.color = `RGB(0, 0, 255)`;
+                                enemy.color = `RGB(0, 0, 255)`;
+                            }
+                            else if(ball.color == `RGB(0, 255, 0)` && enemy.color == `RGB(255, 0, 0)`){
+                                ball.color = `RGB(0, 0, 255)`;
+                                enemy.color = `RGB(0, 0, 255)`;
+                            }
+                            else if(ball.color == `RGB(0, 255, 0)` && enemy.color == `RGB(0, 0, 255)`){
+                                ball.color = `RGB(255, 0, 0)`;
+                                enemy.color = `RGB(255, 0, 0)`;
+                            }
+                            else if(ball.color == `RGB(0, 0, 255)` && enemy.color == `RGB(0, 255, 0)`){
+                                ball.color = `RGB(255, 0, 0)`;
+                                enemy.color = `RGB(255, 0, 0)`;
+                            }
+                            else if(ball.color == `RGB(0, 0, 255)` && enemy.color == `RGB(255, 0, 0)`){
+                                ball.color = `RGB(0, 255, 0)`;
+                                enemy.color = `RGB(0, 255, 0)`;
+                            }
+                            else if(ball.color == `RGB(255, 0, 0)` && enemy.color == `RGB(0, 0, 255)`){
+                                ball.color = `RGB(0, 255, 0)`;
+                                enemy.color = `RGB(0, 255, 0)`;
+                            }
+                        } );
+                    }
+                }
+                //----]----] ボールを動かす
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+            } );
+        }
+
+        /* ==== アニメーション ==== */
+        setInterval( draw, 10 );
+
+        }, false );
+        
+    </script>
+
+
+
+</html>

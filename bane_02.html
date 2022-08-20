@@ -46,22 +46,22 @@
         
         function onDown(e) {
             if(!mov){
-            t = 0;
-            maxx = x
-            if(e.clientX){
-              x = e.clientX - offsetX;
-              y = e.clientY - offsetY;
-            }else{
-              x = e.touches[0].clientX - offsetX;
-              y = e.touches[0].clientY - offsetY;  
-            }
+                t = 0;
+                maxx = x
+                if(e.clientX){
+                x = e.clientX - offsetX;
+                y = e.clientY - offsetY;
+                }else{
+                x = e.touches[0].clientX - offsetX;
+                y = e.touches[0].clientY - offsetY;  
+                }
 
-            if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
-                dragging = true;
-                ondown = true;
-                relX = objX - x;
+                if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                    dragging = true;
+                    ondown = true;
+                    relX = objX - x;
+                }
             }
-        }
         }
 
         function onMove(e) {
@@ -77,19 +77,18 @@
                 objY = canvas.height / 2;
                 drawBall();
             }
- 
         }
 
 
         function onUp(e) {
             if(!mov){
-            if(dragging){
-                maxx = x;
-                start();
+                if(dragging){
+                    maxx = x;
+                    start();
+                }
+                dragging = false;
+                t = 0;
             }
-            dragging = false;
-            t = 0;
-        }
         }
         
         function drawBall(){
@@ -109,7 +108,7 @@
                 drawBall();
                 t += dt;
                 objX = canvas.width / 2 + (maxx - canvas.width/2)*Math.cos(t)*Math.exp(-t);
-                if(t > 3) {
+                if(t > 4) {
                     clearInterval(interval);
                     mov = false;
                 }
@@ -130,14 +129,13 @@
 
 
 
- 
-            canvas.addEventListener('mousedown', onDown, false);
-            canvas.addEventListener('mousemove', onMove, false);
-            canvas.addEventListener('mouseup', onUp, false);
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mousemove', onMove, false);
+        canvas.addEventListener('mouseup', onUp, false);
 
-            canvas.addEventListener('touchstart', onDown, false);
-            canvas.addEventListener('touchmove', onMove, false);
-            canvas.addEventListener('touchend', onUp, false);
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchmove', onMove, false);
+        canvas.addEventListener('touchend', onUp, false);
 
       </script>
 

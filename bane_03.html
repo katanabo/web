@@ -20,8 +20,9 @@
       
         var canvas = document.getElementById( "mycanvas" );
         var ctx = canvas.getContext("2d");
-        var x, y, relX, relY, objX, objY;
+        var x, y, relX, relY,rel2X, rel2Y, objX, objY, obj2X, obj2Y;
         var dragging = false;
+        var dragging2 = false;
         let interval;
         var offsetX = canvas.getBoundingClientRect().left;
         var offsetY = canvas.getBoundingClientRect().top;
@@ -35,19 +36,24 @@
         var dt = 0.06;
         var t = 0;
         var maxx = 0;
+        var maxy = 0;
 
 
         function init() {
             t = 0;
             objX = canvas.width / 2;
             objY = canvas.height / 2;
+            obj2X = canvas.width / 3;
+            obj2Y = canvas.height / 3;
             drawBall();
+            drawBall2();
         }
         
         function onDown(e) {
             if(!mov){
                 t = 0;
-                maxx = x
+                maxx = x;
+                maxy = y;
                 if(e.clientX){
                     x = e.clientX - offsetX;
                     y = e.clientY - offsetY;
@@ -60,21 +66,32 @@
                     dragging = true;
                     relX = objX - x;
                 }
+                if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                    dragging2 = true;
+                    rel2Y = obj2Y - y;
+                }
             }
         }
 
         function onMove(e) {
             if(e.clientX){
               x = e.clientX - offsetX;
-              y = canvas.height / 2;
+              y = e.clientY - offsetY;
             }else{
               x = e.touches[0].clientX - offsetX;
-              y = canvas.height / 2;  
+              y = e.touches[0].clientY - offsetY;  
             }
             if (dragging) {
                 objX = x + relX;
                 objY = canvas.height / 2;
                 drawBall();
+                drawBall2();
+            }
+            if (dragging2) {
+                obj2X = canvas.width /3 ;
+                obj2Y = y + rel2Y;
+                drawBall();
+                drawBall2();
             }
         }
 
@@ -85,7 +102,10 @@
                     maxx = x;
                     start();
                 }
-                dragging = false;
+                if(dragging2){
+                    maxy = y;
+                    start();
+                }
                 t = 0;
             }
         }
@@ -98,18 +118,40 @@
             ctx.fill();
             ctx.closePath();
         }
+
+        function drawBall2(){
+            ctx.beginPath();
+            ctx.arc(obj2X, obj2Y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = "blue";
+            ctx.fill();
+            ctx.closePath();
+        }
+        
         
         function draw(){
             if(dragging){
-                return
-            }else{
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBall();
+                drawBall2();
                 t += dt;
                 objX = canvas.width / 2 + (maxx - canvas.width/2)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
+                    dragging = false;
+                }
+                drawtime();
+            }
+            if(dragging2){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBall();
+                drawBall2();
+                t += dt;
+                obj2Y = canvas.height / 3 + (maxy - canvas.height/3)*Math.cos(t)*Math.exp(-t);
+                if(t > 4) {
+                    clearInterval(interval);
+                    mov = false;
+                    dragging2 = false;
                 }
                 drawtime();
             }

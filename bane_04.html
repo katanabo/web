@@ -23,9 +23,13 @@
         var x, y, relX, relY, objX, objY;
         var rel2X, rel2Y, obj2X, obj2Y;
         var rel3X, rel3Y, obj3X, obj3Y;
+        var rel4X, rel4Y, obj4X, obj4Y;
+        var rel5X, rel5Y, obj5X, obj5Y;
         var dragging = false;
         var dragging2 = false;
         var dragging3 = false;
+        var dragging4 = false;
+        var dragging5 = false;
         let interval;
         var offsetX = canvas.getBoundingClientRect().left;
         var offsetY = canvas.getBoundingClientRect().top;
@@ -40,7 +44,7 @@
         var t = 0;
         var maxx = 0;
         var maxy = 0;
-        var color_list = [0, 1, 1];
+        var color_list = [0, 1, 1, 2, 0];
 
 
         function init() {
@@ -51,9 +55,15 @@
             obj2Y = canvas.height / 3;
             obj3X = canvas.width / 3 +100;
             obj3Y = canvas.height / 3;
+            obj4X = canvas.width / 3;
+            obj4Y = canvas.height / 3+200;
+            obj5X = canvas.width / 3 +100;
+            obj5Y = canvas.height / 3 + 200;
             drawBall();
             drawBall2();
             drawBall3();
+            drawBall4();
+            drawBall5();
         }
 
         let color_decide = (a) => {
@@ -96,6 +106,16 @@
                     rel3X = obj3X - x;
                     rel3Y = obj3Y - y;
                 }
+                if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                    dragging4 = true;
+                    rel4X = obj4X - x;
+                    rel4Y = obj4Y - y;
+                }
+                if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                    dragging5 = true;
+                    rel5X = obj5X - x;
+                    rel5Y = obj5Y - y;
+                }
             }
         }
 
@@ -121,9 +141,21 @@
                         color_list[0] = color_change(color_save, color_list[2]);
                         color_list[2] = color_change(color_save, color_list[2]);
                     }
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[0];
+                        color_list[0] = color_change(color_save, color_list[3]);
+                        color_list[3] = color_change(color_save, color_list[3]);
+                    }
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[0];
+                        color_list[0] = color_change(color_save, color_list[4]);
+                        color_list[4] = color_change(color_save, color_list[4]);
+                    }
                     drawBall();
                     drawBall2();
                     drawBall3();
+                    drawBall4();
+                    drawBall5();
                 }
                 if (dragging2) {
                     obj2X = x + rel2X ;
@@ -138,9 +170,21 @@
                         color_list[1] = color_change(color_save, color_list[2]);
                         color_list[2] = color_change(color_save, color_list[2]);
                     }
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[1];
+                        color_list[1] = color_change(color_save, color_list[3]);
+                        color_list[3] = color_change(color_save, color_list[3]);
+                    }
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[1];
+                        color_list[1] = color_change(color_save, color_list[4]);
+                        color_list[4] = color_change(color_save, color_list[4]);
+                    }
                     drawBall();
                     drawBall2();
                     drawBall3();
+                    drawBall4();
+                    drawBall5();
                 }
                 if (dragging3) {
                     obj3X = x + rel3X
@@ -155,9 +199,79 @@
                         color_list[2] = color_change(color_save, color_list[1]);
                         color_list[1] = color_change(color_save, color_list[1]);
                     }
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[2];
+                        color_list[2] = color_change(color_save, color_list[3]);
+                        color_list[3] = color_change(color_save, color_list[3]);
+                    }
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[2];
+                        color_list[2] = color_change(color_save, color_list[4]);
+                        color_list[4] = color_change(color_save, color_list[4]);
+                    }
                     drawBall();
                     drawBall2();
                     drawBall3();
+                    drawBall4();
+                    drawBall5();
+                }
+                if (dragging4) {
+                    obj4X = x + rel4X
+                    obj4Y = y + rel4Y;
+                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[3];
+                        color_list[3] = color_change(color_save, color_list[0]);
+                        color_list[0] = color_change(color_save, color_list[0]);
+                    }
+                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[3];
+                        color_list[3] = color_change(color_save, color_list[1]);
+                        color_list[1] = color_change(color_save, color_list[1]);
+                    }
+                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[3];
+                        color_list[3] = color_change(color_save, color_list[2]);
+                        color_list[2] = color_change(color_save, color_list[2]);
+                    }
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[3];
+                        color_list[3] = color_change(color_save, color_list[4]);
+                        color_list[4] = color_change(color_save, color_list[4]);
+                    }
+                    drawBall();
+                    drawBall2();
+                    drawBall3();
+                    drawBall4();
+                    drawBall5();
+                }
+                if (dragging5) {
+                    obj5X = x + rel5X
+                    obj5Y = y + rel5Y;
+                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[4];
+                        color_list[4] = color_change(color_save, color_list[0]);
+                        color_list[0] = color_change(color_save, color_list[0]);
+                    }
+                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[4];
+                        color_list[4] = color_change(color_save, color_list[1]);
+                        color_list[1] = color_change(color_save, color_list[1]);
+                    }
+                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[4];
+                        color_list[4] = color_change(color_save, color_list[2]);
+                        color_list[2] = color_change(color_save, color_list[2]);
+                    }
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                        let color_save = color_list[4];
+                        color_list[4] = color_change(color_save, color_list[3]);
+                        color_list[3] = color_change(color_save, color_list[3]);
+                    }
+                    drawBall();
+                    drawBall2();
+                    drawBall3();
+                    drawBall4();
+                    drawBall5();
                 }
             }
         }
@@ -176,6 +290,16 @@
                     start();
                 }
                 if(dragging3){
+                    maxx = x;
+                    maxy = y;
+                    start();
+                }
+                if(dragging4){
+                    maxx = x;
+                    maxy = y;
+                    start();
+                }
+                if(dragging5){
                     maxx = x;
                     maxy = y;
                     start();
@@ -209,6 +333,21 @@
             ctx.closePath();
         }
 
+        function drawBall4(){
+            ctx.beginPath();
+            ctx.arc(obj4X, obj4Y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = color_decide(color_list[3]);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawBall5(){
+            ctx.beginPath();
+            ctx.arc(obj5X, obj5Y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = color_decide(color_list[4]);
+            ctx.fill();
+            ctx.closePath();
+        }
         
         
         
@@ -218,6 +357,8 @@
                 drawBall();
                 drawBall2();
                 drawBall3();
+                drawBall4();
+                drawBall5();
                 t += dt;
                 objX = canvas.width / 2 + (maxx - canvas.width/2)*Math.cos(t)*Math.exp(-t);
                 objY = canvas.height / 2 + (maxy - canvas.height/2)*Math.cos(t)*Math.exp(-t);
@@ -233,6 +374,8 @@
                 drawBall();
                 drawBall2();
                 drawBall3();
+                drawBall4();
+                drawBall5();
                 t += dt;
                 obj2X = canvas.width / 3 + (maxx - canvas.width/3)*Math.cos(t)*Math.exp(-t);
                 obj2Y = canvas.height / 3 + (maxy - canvas.height/3)*Math.cos(t)*Math.exp(-t);
@@ -248,6 +391,8 @@
                 drawBall();
                 drawBall2();
                 drawBall3();
+                drawBall4();
+                drawBall5();
                 t += dt;
                 obj3X = canvas.width / 3 +100 + (maxx - canvas.width/3-100)*Math.cos(t)*Math.exp(-t);
                 obj3Y = canvas.height / 3 + (maxy - canvas.height/3)*Math.cos(t)*Math.exp(-t);
@@ -255,6 +400,40 @@
                     clearInterval(interval);
                     mov = false;
                     dragging3 = false;
+                }
+                drawtime();
+            }
+            if(dragging4){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBall();
+                drawBall2();
+                drawBall3();
+                drawBall4();
+                drawBall5();
+                t += dt;
+                obj4X = canvas.width / 3 + (maxx - canvas.width/3)*Math.cos(t)*Math.exp(-t);
+                obj4Y = canvas.height / 3 +200+ (maxy - canvas.height/3 -200)*Math.cos(t)*Math.exp(-t);
+                if(t > 4) {
+                    clearInterval(interval);
+                    mov = false;
+                    dragging4 = false;
+                }
+                drawtime();
+            }
+            if(dragging5){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBall();
+                drawBall2();
+                drawBall3();
+                drawBall4();
+                drawBall5();
+                t += dt;
+                obj5X = canvas.width / 3 +100 + (maxx - canvas.width/3-100)*Math.cos(t)*Math.exp(-t);
+                obj5Y = canvas.height / 3 +200+ (maxy - canvas.height/3-200)*Math.cos(t)*Math.exp(-t);
+                if(t > 4) {
+                    clearInterval(interval);
+                    mov = false;
+                    dragging5 = false;
                 }
                 drawtime();
             }

@@ -45,13 +45,14 @@
         //ball
         var color = "#b0424e";
         var ballRadius = 40;
+        var ballRadius2 = 60;
         var dx = 2;
         var dy = -3;
         var dt = 0.06;
         var t = 0;
         var maxx = 0;
         var maxy = 0;
-        var color_list = [0, 1, 1, 2, 0];
+        var color_list = [Math.floor(Math.random()*3), Math.floor(Math.random()*3), Math.floor(Math.random()*3), Math.floor(Math.random()*3), Math.floor(Math.random()*3)];
 
 
         function init() {
@@ -97,6 +98,7 @@
         }
         
         function onDown(e) {
+            game_start_frag = true;
             if(!mov){
                 t = 0;
                 maxx = x;
@@ -149,22 +151,22 @@
                 if (dragging) {
                     objX = x + relX;
                     objY = y + relY;
-                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[0];
                         color_list[0] = color_change(color_save, color_list[1]);
                         color_list[1] = color_change(color_save, color_list[1]);
                     }
-                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[0];
                         color_list[0] = color_change(color_save, color_list[2]);
                         color_list[2] = color_change(color_save, color_list[2]);
                     }
-                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[0];
                         color_list[0] = color_change(color_save, color_list[3]);
                         color_list[3] = color_change(color_save, color_list[3]);
                     }
-                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[0];
                         color_list[0] = color_change(color_save, color_list[4]);
                         color_list[4] = color_change(color_save, color_list[4]);
@@ -178,22 +180,22 @@
                 if (dragging2) {
                     obj2X = x + rel2X ;
                     obj2Y = y + rel2Y;
-                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[1];
                         color_list[1] = color_change(color_save, color_list[0]);
                         color_list[0] = color_change(color_save, color_list[0]);
                     }
-                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[1];
                         color_list[1] = color_change(color_save, color_list[2]);
                         color_list[2] = color_change(color_save, color_list[2]);
                     }
-                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[1];
                         color_list[1] = color_change(color_save, color_list[3]);
                         color_list[3] = color_change(color_save, color_list[3]);
                     }
-                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[1];
                         color_list[1] = color_change(color_save, color_list[4]);
                         color_list[4] = color_change(color_save, color_list[4]);
@@ -207,22 +209,22 @@
                 if (dragging3) {
                     obj3X = x + rel3X
                     obj3Y = y + rel3Y;
-                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[2];
                         color_list[2] = color_change(color_save, color_list[0]);
                         color_list[0] = color_change(color_save, color_list[0]);
                     }
-                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[2];
                         color_list[2] = color_change(color_save, color_list[1]);
                         color_list[1] = color_change(color_save, color_list[1]);
                     }
-                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[2];
                         color_list[2] = color_change(color_save, color_list[3]);
                         color_list[3] = color_change(color_save, color_list[3]);
                     }
-                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[2];
                         color_list[2] = color_change(color_save, color_list[4]);
                         color_list[4] = color_change(color_save, color_list[4]);
@@ -236,22 +238,22 @@
                 if (dragging4) {
                     obj4X = x + rel4X
                     obj4Y = y + rel4Y;
-                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[3];
                         color_list[3] = color_change(color_save, color_list[0]);
                         color_list[0] = color_change(color_save, color_list[0]);
                     }
-                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[3];
                         color_list[3] = color_change(color_save, color_list[1]);
                         color_list[1] = color_change(color_save, color_list[1]);
                     }
-                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[3];
                         color_list[3] = color_change(color_save, color_list[2]);
                         color_list[2] = color_change(color_save, color_list[2]);
                     }
-                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj5X) ** 2 + (y-obj5Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[3];
                         color_list[3] = color_change(color_save, color_list[4]);
                         color_list[4] = color_change(color_save, color_list[4]);
@@ -265,22 +267,22 @@
                 if (dragging5) {
                     obj5X = x + rel5X
                     obj5Y = y + rel5Y;
-                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius ** 2) {
+                    if((x-objX) ** 2 + (y-objY) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[4];
                         color_list[4] = color_change(color_save, color_list[0]);
                         color_list[0] = color_change(color_save, color_list[0]);
                     }
-                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj2X) ** 2 + (y-obj2Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[4];
                         color_list[4] = color_change(color_save, color_list[1]);
                         color_list[1] = color_change(color_save, color_list[1]);
                     }
-                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj3X) ** 2 + (y-obj3Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[4];
                         color_list[4] = color_change(color_save, color_list[2]);
                         color_list[2] = color_change(color_save, color_list[2]);
                     }
-                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius ** 2) {
+                    if((x-obj4X) ** 2 + (y-obj4Y) ** 2 < ballRadius2 ** 2) {
                         let color_save = color_list[4];
                         color_list[4] = color_change(color_save, color_list[3]);
                         color_list[3] = color_change(color_save, color_list[3]);
@@ -292,6 +294,7 @@
                     drawBall5();
                 }
             }
+
         }
 
 
@@ -325,9 +328,9 @@
                 t = 0;
             }
         }
-        
+
         function drawBall(){
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 50, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.arc(objX, objY, ballRadius, 0, Math.PI*2);
             ctx.fillStyle = color_decide(color_list[0]);
@@ -371,24 +374,24 @@
         
         function draw(){
             if(dragging){
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 50, canvas.width, canvas.height);
                 drawBall();
                 drawBall2();
                 drawBall3();
                 drawBall4();
                 drawBall5();
                 t += dt;
-                objX = objX_ini + (maxx - onjX_ini)*Math.cos(t)*Math.exp(-t);
+                objX = objX_ini + (maxx - objX_ini)*Math.cos(t)*Math.exp(-t);
                 objY = objY_ini + (maxy - objY_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
                     dragging = false;
                 }
-                drawtime();
+
             }
             if(dragging2){
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 50, canvas.width, canvas.height);
                 drawBall();
                 drawBall2();
                 drawBall3();
@@ -402,27 +405,25 @@
                     mov = false;
                     dragging2 = false;
                 }
-                drawtime();
             }
             if(dragging3){
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 50, canvas.width, canvas.height);
                 drawBall();
                 drawBall2();
                 drawBall3();
                 drawBall4();
                 drawBall5();
                 t += dt;
-                obj3X = obj3X_ini + (obj3X_ini)*Math.cos(t)*Math.exp(-t);
-                obj3Y = obj3Y_ini + (obj3Y_ini)*Math.cos(t)*Math.exp(-t);
+                obj3X = obj3X_ini + (maxx - obj3X_ini)*Math.cos(t)*Math.exp(-t);
+                obj3Y = obj3Y_ini + (maxy - obj3Y_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
                     dragging3 = false;
                 }
-                drawtime();
             }
             if(dragging4){
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 50, canvas.width, canvas.height);
                 drawBall();
                 drawBall2();
                 drawBall3();
@@ -436,10 +437,9 @@
                     mov = false;
                     dragging4 = false;
                 }
-                drawtime();
             }
             if(dragging5){
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 50, canvas.width, canvas.height);
                 drawBall();
                 drawBall2();
                 drawBall3();
@@ -453,7 +453,6 @@
                     mov = false;
                     dragging5 = false;
                 }
-                drawtime();
             }
         }
         
@@ -466,6 +465,25 @@
         function start(){
            interval = setInterval(draw, 5);
            mov = true;
+        }
+        
+        var timer = 0;
+        var game_start_frag = false;
+        var startid;
+        startid = setInterval(game_start, 10);
+
+        function game_start(){
+            if(game_start_frag){
+                ctx.clearRect(0, 0, 1000, 50);
+                timer += 0.01;
+                ctx.font = "40px Arial";
+                ctx.fillStyle = "black";
+                ctx.fillText("time:" +timer.toFixed(2), 8, 40);
+            }
+            if(color_list.toString() === [0,0,0,0,0].toString() || color_list.toString() === [1,1,1,1,1].toString() || color_list.toString() === [2,2,2,2,2].toString()){
+                game_start_frag = false;
+                clearInterval(startid);
+            }
         }
 
 

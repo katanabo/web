@@ -25,6 +25,13 @@
         var rel3X, rel3Y, obj3X, obj3Y;
         var rel4X, rel4Y, obj4X, obj4Y;
         var rel5X, rel5Y, obj5X, obj5Y;
+        var objX_ini, objY_ini;
+        var obj2X_ini, obj2Y_ini;
+        var obj3X_ini, obj3Y_ini;
+        var obj4X_ini, obj4Y_ini;
+        var obj5X_ini, obj5Y_ini;
+
+
         var dragging = false;
         var dragging2 = false;
         var dragging3 = false;
@@ -49,16 +56,27 @@
 
         function init() {
             t = 0;
-            objX = canvas.width / 2;
-            objY = canvas.height / 2;
-            obj2X = canvas.width / 3;
-            obj2Y = canvas.height / 3;
-            obj3X = canvas.width / 3 +100;
-            obj3Y = canvas.height / 3;
-            obj4X = canvas.width / 3;
-            obj4Y = canvas.height / 3+200;
-            obj5X = canvas.width / 3 +100;
-            obj5Y = canvas.height / 3 + 200;
+            objX_ini = canvas.width / 2;
+            objY_ini = canvas.height / 2+ 200;
+            obj2X_ini = canvas.width / 4+10;
+            obj2Y_ini = canvas.height / 3+60;
+            obj3X_ini = canvas.width / 4 +150;
+            obj3Y_ini = canvas.height / 3+60;
+            obj4X_ini = canvas.width / 3-50;
+            obj4Y_ini = canvas.height / 3+200;
+            obj5X_ini = canvas.width / 3 +150;
+            obj5Y_ini = canvas.height / 3 + 200;
+
+            objX = objX_ini;
+            objY = objY_ini;
+            obj2X = obj2X_ini;
+            obj2Y = obj2Y_ini;
+            obj3X = obj3X_ini;
+            obj3Y = obj3Y_ini;
+            obj4X = obj4X_ini;
+            obj4Y = obj4Y_ini;
+            obj5X = obj5X_ini;
+            obj5Y = obj5Y_ini;
             drawBall();
             drawBall2();
             drawBall3();
@@ -360,8 +378,8 @@
                 drawBall4();
                 drawBall5();
                 t += dt;
-                objX = canvas.width / 2 + (maxx - canvas.width/2)*Math.cos(t)*Math.exp(-t);
-                objY = canvas.height / 2 + (maxy - canvas.height/2)*Math.cos(t)*Math.exp(-t);
+                objX = objX_ini + (maxx - onjX_ini)*Math.cos(t)*Math.exp(-t);
+                objY = objY_ini + (maxy - objY_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
@@ -377,8 +395,8 @@
                 drawBall4();
                 drawBall5();
                 t += dt;
-                obj2X = canvas.width / 3 + (maxx - canvas.width/3)*Math.cos(t)*Math.exp(-t);
-                obj2Y = canvas.height / 3 + (maxy - canvas.height/3)*Math.cos(t)*Math.exp(-t);
+                obj2X = obj2X_ini + (maxx - obj2X_ini)*Math.cos(t)*Math.exp(-t);
+                obj2Y = obj2Y_ini + (maxy - obj2Y_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
@@ -394,8 +412,8 @@
                 drawBall4();
                 drawBall5();
                 t += dt;
-                obj3X = canvas.width / 3 +100 + (maxx - canvas.width/3-100)*Math.cos(t)*Math.exp(-t);
-                obj3Y = canvas.height / 3 + (maxy - canvas.height/3)*Math.cos(t)*Math.exp(-t);
+                obj3X = obj3X_ini + (obj3X_ini)*Math.cos(t)*Math.exp(-t);
+                obj3Y = obj3Y_ini + (obj3Y_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
@@ -411,8 +429,8 @@
                 drawBall4();
                 drawBall5();
                 t += dt;
-                obj4X = canvas.width / 3 + (maxx - canvas.width/3)*Math.cos(t)*Math.exp(-t);
-                obj4Y = canvas.height / 3 +200+ (maxy - canvas.height/3 -200)*Math.cos(t)*Math.exp(-t);
+                obj4X = obj4X_ini + (maxx - obj4X_ini)*Math.cos(t)*Math.exp(-t);
+                obj4Y = obj4Y_ini+ (maxy - obj4Y_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;
@@ -428,8 +446,8 @@
                 drawBall4();
                 drawBall5();
                 t += dt;
-                obj5X = canvas.width / 3 +100 + (maxx - canvas.width/3-100)*Math.cos(t)*Math.exp(-t);
-                obj5Y = canvas.height / 3 +200+ (maxy - canvas.height/3-200)*Math.cos(t)*Math.exp(-t);
+                obj5X = obj5X_ini + (maxx - obj5X_ini)*Math.cos(t)*Math.exp(-t);
+                obj5Y = obj5Y_ini+ (maxy - obj5Y_ini)*Math.cos(t)*Math.exp(-t);
                 if(t > 4) {
                     clearInterval(interval);
                     mov = false;

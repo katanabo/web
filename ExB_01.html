@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>touch sample</title>
+  </head>
+
+  <style>
+    canvas {background: #eee; display: block; margin: 20px auto;}
+    canvas{
+        touch-action: none;
+             -webkit-touch-callout: none;
+             -webkit-user-select: none;
+             -khtml-user-select: none;
+             -moz-user-select: none;
+             -ms-user-select: none;
+             user-select: none;
+             outline: none;
+             -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+             touch-action: none;
+            z-index: -1;
+            
+    }
+
+  </style>
+
+  <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+      
+        var canvas = document.getElementById( "mycanvas" );
+        var ctx = canvas.getContext("2d");
+        var x, y;
+        var x0, y0;
+        var vx, vy;
+        var E = 0;
+        var B = 0;
+
+        //ball
+        var color = "#b0424e";
+        var ballRadius = 4;
+        var dt = 0.05;
+        var t = 0;
+        var vx = 0;
+        var vy = 0;
+
+
+        //click
+        var a, b;
+        var a2, b2;
+        var multi = false;
+
+        function init() {
+            t = 0;
+            x0 = canvas.width / 2;
+            y0 = canvas.height / 2;
+            x = x0;
+            y = y0;
+            drawBall();
+        }
+        
+        function onDown(e) {
+            e.preventDefault();
+            var offsetX = canvas.getBoundingClientRect().left;
+            var offsetY = canvas.getBoundingClientRect().top;
+
+            if(e.clientX){
+              a = e.clientX - offsetX;
+              b = e.clientY - offsetY;
+            }else{
+                var touch1 = e.touches[0];
+                var touch2 = e.touches[1]
+                a = e.touches[0].clientX - offsetX;
+                b = e.touches[0].clientY - offsetY;
+                if(touch1 && touch2){
+                    multi = true;
+                    a = e.touches[0].clientX - offsetX;
+                    b = e.touches[0].clientY - offsetY;
+                    a2 = e.touches[1].clientX - offsetX;
+                    b2 = e.touches[1].clientY - offsetY;  
+                }
+            }   
+
+            if(0 < a && a < canvas.width /2 ){
+                E = 1;
+            };
+            if(a > canvas.width /2 ){
+                B = 0.5;
+            };
+            if(0 < a2 && a2 < canvas.width /2 ){
+                E = 1
+            };
+            if(a2 > canvas.width /2 ){
+                B = 0.5;
+            };
+        }
+
+        function onUp(e) {
+            if(multi){
+                E = 0;
+                B = 0;
+                a = 0;
+                b = 0;
+                a2 = 0;
+                b2 = 0;
+                multi = false;
+                e.preventDefault();
+                var offsetX = canvas.getBoundingClientRect().left;
+                var offsetY = canvas.getBoundingClientRect().top;
+                if(e.clientX){
+                    a = e.clientX - offsetX;
+                    b = e.clientY - offsetY;
+                }else{
+                    a = e.touches[0].clientX - offsetX;
+                    b = e.touches[0].clientY - offsetY;
+                }
+                if(0 < a && a < canvas.width /2 ){
+                    E = 1;
+                };
+                if(a > canvas.width /2 ){
+                    B = 0.5;
+                };
+            }else{
+                E = 0;
+                B = 0;
+                a = 0;
+                b = 0;
+                a2 = 0;
+                b2 = 0;
+                E = 0;
+                B = 0;
+            }
+        }
+        
+        setInterval(draw, 5);
+
+
+        function drawBall(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.closePath();
+            
+        }
+        function mod(a,b){return(a*b<0)*b+a%b}
+
+        function draw(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBall();
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "#0095DD";
+                ctx.fillText("E:" +E, 8, 20);
+                ctx.fillText("B:" +B, 8, 40);
+
+                vx += E * dt + vy * B * dt;
+                vy += -vx * B * dt;
+
+                x += vx * dt;
+                y += vy * dt;
+                if(x > canvas.width || x < 0){
+                    x = mod(x, canvas.width);
+                }
+                if(y > canvas.height || y < 0){
+                    y = mod(y, canvas.height);
+                }
+            }
+
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mouseup', onUp, false);
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchend', onUp, false);
+
+
+      </script>
+
+
+  </body>
+
+</html>

@@ -117,6 +117,10 @@
         };
 
         function drawCyclotron(){
+            ctx.fillStyle = '#FD0';
+            ctx.globalAlpha = 0.1;
+            ctx.fillRect(150, 0, 20, 590)
+            ctx.globalAlpha = 1;
             ctx.beginPath();
             ctx.moveTo(150, 0);
             ctx.lineTo(150, 590);

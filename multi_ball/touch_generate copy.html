@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="hot iphone" />
+        <meta property="og:image" content="https://2.bp.blogspot.com/-nm6b6DkLzgk/WzC95qlZwFI/AAAAAAABM84/VTT_0zPoQRwDtVGv7sXONTproI8bV-bxwCLcBGAs/s800/samui_man_hokkairo.png" />
+        <title>ball class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+  </style>
+
+    <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+        var pos = {
+        x: 100,
+        y: 100,
+        };
+        var numberOfBalls = 0;
+        var dt = 0.1;
+
+    function mod(a,b){return(a*b<0)*b+a%b}
+
+    class Ball {
+        constructor(pos) {
+            this.pos = pos;
+            this.radius = (Math.random()*10);
+            this.color = randomColor();
+//            this.dx = Math.floor(Math.random()*2-1);
+//            this.dy = Math.floor(Math.random()*2-1);
+            this.vx = 0;
+            this.vy = 0;
+        }
+
+        drawBall() {
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+        
+        updateBall() {
+            if (
+                this.pos.x + this.vx * dt > canvas.width - this.radius ||
+                this.pos.x + this.vy * dt < this.radius
+            ){
+                this.vx = -this.vx;
+            }
+            if(
+                this.pos.y + this.vy * dt > canvas.height - this.radius ||
+                this.pos.y + this.vy * dt < this.radius
+            ){
+                this.vy = -this.vy;
+            }
+            this.vx += xforce(this.x, this.y, this.vx, this.vy);
+            this.vy += yforce(this.x, this.y, this.vx, this.vy);
+            this.pos.x += this.vx * dt;
+            this.pos.y += this.vy * dt;
+
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+    }
+
+    function xforce(x, y, vx, vy){
+        return 0;
+    }
+
+    function yforce(x, y, vx, vy){
+        return 0.1;
+    }
+
+    function collision(a, b) {
+
+        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<-7){
+            a.pos.x = -50;
+            a.pos.y = -590;
+        }
+
+        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
+            let ax_save = a.vx;
+            let ay_save = a.vy;
+            let bx_save = b.vx;
+            let by_save = b.vy;
+            let a_mass = a.radius**2
+            let b_mass = b.radius**2
+            
+            a.vx = (a_mass * ax_save + 2 * b_mass * bx_save - b_mass * ax_save)/(a_mass+b_mass);
+            a.vy = (a_mass * ay_save + 2 * b_mass * by_save - b_mass * ay_save)/(a_mass+b_mass)
+            b.vx = (b_mass * bx_save + 2 * a_mass * ax_save - a_mass * bx_save)/(a_mass+b_mass);
+            b.vy = (b_mass * by_save + 2 * a_mass * ay_save - a_mass * by_save)/(a_mass+b_mass);
+        }
+    }
+
+    function randomColor() {
+        const rc1 = Math.random() * 16777215;
+        const rc2 = Math.floor(rc1);
+        const rc3 = rc2.toString(16);
+        return "#" + rc3;
+    }
+
+    function randomPos() {
+        pos = {
+            x: 30 + Math.floor(Math.random() * (canvas.width-60)),
+            y: 30 + Math.floor(Math.random() * (canvas.height-60)),
+        };
+        return pos;
+    }
+
+    var balls = [];
+
+    for (let index = 0; index < numberOfBalls; index++) {
+        balls.push(new Ball(randomPos()));
+        balls[index].drawBall();
+    }
+
+    setInterval(
+        function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let index = 0; index < balls.length; index++) {
+                for (let i = 0; i < balls.length; i++){
+                    if(index < i){
+                        collision(balls[index], balls[i]);
+                    };
+                };
+                balls[index].updateBall();
+            };
+    },1);
+
+    
+    function onDown(e) {
+        var tpos = {
+                x: 0,
+                y: 0,
+            };
+        var offsetX = canvas.getBoundingClientRect().left;
+        var offsetY = canvas.getBoundingClientRect().top;
+        if(e.clientX){
+            tpos.x = e.clientX - offsetX;
+            tpos.y = e.clientY - offsetY;
+        }else{
+            tpos.x = e.touches[0].clientX - offsetX;
+            tpos.y = e.touches[0].clientY - offsetY;  
+        }
+        balls.push(new Ball(tpos));
+    }
+
+    function onUp(e) {
+    }
+
+    canvas.addEventListener('mousedown', onDown, false);
+//    canvas.addEventListener('mousemove', onMove, false);
+    canvas.addEventListener('mouseup', onUp, false);
+
+    canvas.addEventListener('touchstart', onDown, false);
+//    canvas.addEventListener('touchmove', onMove, false);
+    canvas.addEventListener('touchend', onUp, false);
+
+
+    </script>
+
+  </body>
+
+</html>

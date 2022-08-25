@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ball class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+  </style>
+
+    <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var canvasObject = canvas.getContext("2d");
+        var pos = {
+        x: 100,
+        y: 100,
+        };
+        var numberOfBalls = 100000;
+
+    function mod(a,b){return(a*b<0)*b+a%b}
+
+    class Ball {
+        constructor(pos) {
+            this.pos = pos;
+            this.radius = Math.random();
+            this.color = randomColor();
+//            this.dx = Math.floor(Math.random()*2-1);
+//            this.dy = Math.floor(Math.random()*2-1);
+            this.dx = Math.random()*2-1;
+            this.dy = Math.random()*2-1;
+        }
+
+        drawBall() {
+            canvasObject.beginPath();
+            canvasObject.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            canvasObject.fillStyle = this.color;
+            canvasObject.fill();
+            canvasObject.closePath();
+        }
+        
+        updateBall() {
+            if (
+                this.pos.x + this.dx > canvas.width - this.radius ||
+                this.pos.x + this.dx < this.radius
+            ){
+                this.dx = -this.dx;
+            }
+            if(
+                this.pos.y + this.dy > canvas.height - this.radius ||
+                this.pos.y + this.dy < this.radius
+            ){
+                this.dy = -this.dy;
+            }
+                this.pos.x += this.dx;
+                this.pos.y += this.dy;
+                canvasObject.beginPath();
+                canvasObject.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+                canvasObject.fillStyle = this.color;
+                canvasObject.fill();
+        }
+    }
+
+    function collision(a, b) {
+        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<-4){
+            a.radius =0;
+        }
+
+        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
+            let ax_save = a.dx;
+            let ay_save = a.dy;
+            let aradius_save = a.radius;
+            a.dx = b.dx;
+            a.dy = b.dy;
+            b.dx = ax_save;
+            b.dy = ay_save;
+        }
+    }
+
+    function randomColor() {
+        const rc1 = Math.random() * 16777215;
+        const rc2 = Math.floor(rc1);
+        const rc3 = rc2.toString(16);
+        return "#" + rc3;
+    }
+
+    function randomPos() {
+        pos = {
+            x: 150 + Math.floor(Math.random() * (canvas.width-300)),
+            y: 300 + Math.floor(Math.random() * (canvas.height-600)),
+        };
+        return pos;
+    }
+
+    var balls = [];
+
+    for (let index = 0; index < numberOfBalls; index++) {
+        balls.push(new Ball(randomPos()));
+        balls[index].drawBall();
+    }
+
+    setInterval(function() {
+        canvasObject.clearRect(0, 0, canvas.width, canvas.height);
+        for (let index = 0; index < numberOfBalls; index++) {
+            balls[index].updateBall();
+        }
+    }, 0.5);
+
+    </script>
+
+  </body>
+
+</html>

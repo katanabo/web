@@ -27,9 +27,7 @@
 
   <body onload="init()">
     <canvas id="mycanvas" width="320" height="590"></canvas>
-    <div class = "button_wrapper">
-        <button onclick="automode_switch()">auto mode</button>
-    </div>
+
 
     <script>
       
@@ -38,6 +36,9 @@
         var x, y;
         var x0, y0;
         var vx, vy;
+        var x2, y2;
+        var x20, y20;
+        var vx2, vy2;
         var E = 5;
         var B = 0.5;
         var automode = false;
@@ -62,7 +63,6 @@
             x = x0;
             y = y0;
             drawBall();
-            drawCyclotron();
         }
         
         function onDown(e) {
@@ -99,7 +99,7 @@
 
         function onUp(e) {
             e.preventDefault();
-                E = 50;
+                E = 5;
                 a = 0;
                 b = 0;
         }
@@ -136,15 +136,6 @@
 
         function mod(a,b){return(a*b<0)*b+a%b}
 
-
-        function EBfield(){
-            if(150 < x && x <170){
-                B = 0;
-            }else{
-                E = 0;
-                B = 0.5;
-            }
-        }
 
         function xforce(x, y){
             if(automode){
@@ -205,6 +196,7 @@
                 ctx.fillText("磁場 - (0.1)",215, 440);
                 ctx.fillText("電場 × (-1)",35, 440);
 
+                // numerical calculation
                 vx += xforce(x, y);
                 vy += yforce(x, y);
 

@@ -20,16 +20,11 @@
              -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
              touch-action: none;
             z-index: -1;
-            
     }
-
   </style>
 
-  <body onload="init()">
+    <body onload="init()">
     <canvas id="mycanvas" width="320" height="590"></canvas>
-    <div class = "button_wrapper">
-        <button onclick="automode_switch()">auto mode</button>
-    </div>
 
     <script>
       
@@ -40,29 +35,26 @@
         var vx, vy;
         var E = 5;
         var B = 0.5;
-        var automode = false;
 
         //ball
         var color = "#b0424e";
         var ballRadius = 4;
-        var dt = 0.05;
+        var dt = 0.01;
         var t = 0;
         var vx = 0;
         var vy = 0;
+        t = 0;
+        x0 = canvas.width / 2;
+        y0 = canvas.height / 2;
+        x = x0 + 50;
+        y = y0;
 
         //click
         var a, b;
-        var a2, b2;
-        var multi = false;
+
 
         function init() {
-            t = 0;
-            x0 = canvas.width / 2;
-            y0 = canvas.height / 2;
-            x = x0;
-            y = y0;
             drawBall();
-            drawCyclotron();
         }
         
         function onDown(e) {
@@ -90,23 +82,15 @@
             };
         }
 
-        function automode_switch(){
-            automode = true;
-        }
-
-
-
-
         function onUp(e) {
             e.preventDefault();
-                E = 50;
-                a = 0;
-                b = 0;
+            E = 5;
+            a = 0;
+            b = 0;
         }
         
-        setInterval(draw, 5);
-
-
+        
+        
         function drawBall(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
@@ -115,96 +99,48 @@
             ctx.fill();
             ctx.closePath();
         };
+        
+        class ball{
+            constructor(x, y){
+                this.x  = x;
+                this.y  = y;
+            }
+            
+            draw(){
+                ctx.beginPath();
+                ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
 
-        function drawCyclotron(){
-            ctx.fillStyle = '#FD0';
-            ctx.globalAlpha = 0.1;
-            ctx.fillRect(150, 0, 20, 590)
-            ctx.globalAlpha = 1;
-            ctx.beginPath();
-            ctx.moveTo(150, 0);
-            ctx.lineTo(150, 590);
-            ctx.moveTo(170, 0);
-            ctx.lineTo(170, 590);
-            ctx.setLineDash([2, 2]);
-            ctx.moveTo(170, 295);
-            ctx.lineTo(320, 295);
-            ctx.strokeStyle = "black" ;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        };
+        let ball1 = new ball(x0, y0);
+
+        
+        setInterval(ball1.draw(), 25);
+
 
         function mod(a,b){return(a*b<0)*b+a%b}
 
 
-        function EBfield(){
-            if(150 < x && x <170){
-                B = 0;
-            }else{
-                E = 0;
-                B = 0.5;
-            }
-        }
-
         function xforce(x, y){
-            if(automode){
-                if(150 < x && x <170){
-                    if(vx < 0){
-                        return -E *dt;
-                    }else{
-                        return E * dt;
-                    }
-                }else{
-                    return vy * B *dt;
-                }                  
-            }else{
-                if(150 < x && x <170){
-                    return E * dt;
-                }else{
-                    return vy * B * dt;
-                }
-            }
+            return -(x-canvas.width/2);
         }
 
         function yforce(x, y){
-            if(150 < x && x <170){
-                return 0;
-            }else{
-                return -vx * B * dt;
-            }
+            return -0.5*(y-canvas.width/2);
         }
 
         function draw(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBall();
-                drawCyclotron();
                 ctx.fillStyle = "#0095DD";
                 ctx.font = "15px Arial";
-                ctx.fillText("automode:" + automode, 10, 100);
-                ctx.fillText("ラーモア半径:" + ((vx**2 + vy ** 2)**(1/2)/B).toFixed(0), 10, 120);
-                ctx.fillText("速度:" + ((vx**2 + vy ** 2)**(1/2)).toFixed(0), 10, 140);
+//                ctx.fillText("速度:" + ((vx**2 + vy ** 2)**(1/2)).toFixed(0), 10, 40);
 
-                
-                ctx.font = "40px Arial";
-                if(true){
-                    ctx.fillText("E ", 10, 40);
-                    ctx.fillText("→", 40, 35);
-                    ctx.font = "20px Arial";
-                    ctx.fillText(E.toFixed(2), 10, 70);
-                
-                }
-                if(true){
-                    ctx.font = "40px Arial";
-                    ctx.fillText("B⦿ ", 240, 40);
-                    ctx.font = "20px Arial";
-                    ctx.fillText(-B.toFixed(2), 240, 70);
-                }
-                ctx.font = "12px Arial";
-                ctx.fillStyle = "green";
-                ctx.fillText("磁場 + (0.1)", 215, 140);
-                ctx.fillText("磁場 - (0.1)",215, 440);
-                ctx.fillText("電場 × (-1)",35, 440);
 
+                // numerical calculation
                 vx += xforce(x, y);
                 vy += yforce(x, y);
 

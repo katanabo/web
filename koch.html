@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>koch</title>
+  </head>
+
+  <style>
+    canvas {background: #eee; display: block; margin: 20px auto;}
+    canvas{
+        touch-action: none;
+             -webkit-touch-callout: none;
+             -webkit-user-select: none;
+             -khtml-user-select: none;
+             -moz-user-select: none;
+             -ms-user-select: none;
+             user-select: none;
+             outline: none;
+             -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+             touch-action: none;
+            z-index: -1;
+            
+    }
+
+  </style>
+
+  <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+      
+        var canvas = document.getElementById( "mycanvas" );
+        var ctx = canvas.getContext("2d");
+        var x, y;
+        var x0, y0;
+        var vx, vy;
+        var E = 5;
+        var B = 0.5;
+        var automode = false;
+
+        //ball
+        var color = "#b0424e";
+        var ballRadius = 4;
+        var dt = 0.05;
+        var t = 0;
+        var vx = 0;
+        var vy = 0;
+
+        //click
+        var a, b;
+        var a2, b2;
+        var multi = false;
+
+        function init() {
+            t = 0;
+            x0 = canvas.width / 2;
+            y0 = canvas.height / 2;
+            x = x0;
+            y = y0;
+            drawBall();
+            drawCyclotron();
+        }
+        
+        function onDown(e) {
+            e.preventDefault();
+            var offsetX = canvas.getBoundingClientRect().left;
+            var offsetY = canvas.getBoundingClientRect().top;
+
+            if(e.clientX){
+              a = e.clientX - offsetX;
+              b = e.clientY - offsetY;
+            }else{
+                var touch1 = e.touches[0];
+                a = e.touches[0].clientX - offsetX;
+                b = e.touches[0].clientY - offsetY;
+            }   
+
+            if(0 < a && a < canvas.width /2 ){
+                E *= -1; 
+            };
+            if(a > canvas.width /2 && b > canvas.height /2){
+                B += 0.1;
+            };
+            if(a > canvas.width /2 && b < canvas.height /2){
+                B -= 0.1;
+            };
+        }
+
+        function automode_switch(){
+            automode = true;
+        }
+
+
+
+
+        function onUp(e) {
+            e.preventDefault();
+                E = 50;
+                a = 0;
+                b = 0;
+        }
+        
+        setInterval(draw, 5);
+
+        var th = Math.PI * 60 /180;
+        var a = [0.0, 0.0];
+        var a = [100.0, 0.0];
+        var n = 5;
+        var points = [a];
+
+        function drawkoch(){
+
+            if(n == 0) return;
+
+            
+
+
+            ctx.fillStyle = '#FD0';
+            ctx.beginPath();
+            ctx.moveTo(150, 0);
+            ctx.lineTo(150, 590);
+            ctx.moveTo(170, 0);
+            ctx.lineTo(170, 590);
+            ctx.setLineDash([2, 2]);
+            ctx.moveTo(170, 295);
+            ctx.lineTo(320, 295);
+            ctx.strokeStyle = "black" ;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        };
+
+
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mouseup', onUp, false);
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchend', onUp, false);
+
+      </script>
+
+
+  </body>
+
+</html>

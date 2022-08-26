@@ -134,8 +134,8 @@
 
     function gravitation(a, b){
         var l = ((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2);
-        a.xforce = ((a.mass + b.mass)*(b.pos.x - a.pos.x)/(l**3));
-        a.yforce = ((a.mass + b.mass)*(b.pos.y - a.pos.y)/(l**3));
+        a.xforce += ((a.mass + b.mass)*(b.pos.x - a.pos.x)/(l**3));
+        a.yforce += ((a.mass + b.mass)*(b.pos.y - a.pos.y)/(l**3));
     }
 
     function randomColor() {
@@ -171,8 +171,12 @@
                         gravitation(balls[index] , balls[i]);
                     }
                 };
-                balls[index].updateBall();
             };
+            for(let index = 0; index < balls.length; index++){
+                balls[index].updateBall();
+                balls[index].xforce = 0;
+                balls[index].yforce = 0;
+            }
     },1);
 
     var tx;

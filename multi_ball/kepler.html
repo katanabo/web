@@ -52,6 +52,8 @@
             this.mass = this.radius ** 2;
             this.changeradiusflag = false;
             this.downflag = false;
+            this.xforce = 0;
+            this.yforce = 0;
         }
 
         drawBall() {
@@ -65,7 +67,7 @@
         updateBall() {
             if(this.changeradiusflag) {
                 balls[ballnum-1].radius += 0.1;
-                balls[ballnum-1].radius %= 30;
+                balls[ballnum-1].radius %= 80;
             }
             this.mass = this.radius ** 2;
             if((this.pos.x + this.vx * dt < this.radius) && (this.vx < 0))
@@ -84,8 +86,8 @@
             {
                 this.vy = -this.vy;
             }
-            this.vx += xforce(this.x, this.y, this.vx, this.vy);
-            this.vy += yforce(this.x, this.y, this.vx, this.vy);
+            this.vx += this.xforce * dt / this.mass;
+            this.vy += this.yforce * dt / this.mass;
             this.pos.x += this.vx * dt;
             this.pos.y += this.vy * dt;
 
@@ -93,10 +95,6 @@
             ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
             ctx.fillStyle = this.color;
             ctx.fill();
-
-            totalscore();
-//            ctx.fillText("速度:" + ((vx**2 + vy ** 2)**(1/2)).toFixed(0), 10, 140);
-
         }
     }
 
@@ -113,13 +111,6 @@
         ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
     }
 
-    function xforce(x, y, vx, vy){
-        return 0;
-    }
-
-    function yforce(x, y, vx, vy){
-        return 0;
-    }
 
     function collision(a, b) {
         if(!(b.downflag)){
@@ -139,6 +130,12 @@
                 }
             }
         }
+    }
+
+    function gravitation(a, b){
+        var l = ((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2);
+        a.xforce = ((a.mass + b.mass)*(b.pos.x - a.pos.x)/(l**3));
+        a.yforce = ((a.mass + b.mass)*(b.pos.y - a.pos.y)/(l**3));
     }
 
     function randomColor() {
@@ -170,6 +167,9 @@
                     if(index < i){
                         collision(balls[index], balls[i]);
                     };
+                    if(index != i){
+                        gravitation(balls[index] , balls[i]);
+                    }
                 };
                 balls[index].updateBall();
             };

@@ -39,18 +39,21 @@
         var numberOfBalls = 0;
         var dt = 0.1;
 
+
     function mod(a,b){return(a*b<0)*b+a%b}
 
     class Ball {
         constructor(pos) {
             this.pos = pos;
-            this.radius = (Math.random()*30);
+            this.radius = 0;
             this.color = randomColor();
 //            this.dx = Math.floor(Math.random()*2-1);
 //            this.dy = Math.floor(Math.random()*2-1);
             this.vx = 0;
             this.vy = 0;
             this.mass = this.radius ** 2;
+            this.changeradiusflag = false;
+            this.downflag = false;
         }
 
         drawBall() {
@@ -62,6 +65,13 @@
         }
         
         updateBall() {
+            if(this.changeradiusflag) {
+                balls[ballnum-1].radius += 0.1;
+                if(balls[ballnum-1].radius > 60){
+                    balls[ballnum-1].radius -= 60;
+                }
+            }
+            this.mass = this.radius ** 2;
             if (
                 this.pos.x + this.vx * dt > canvas.width - this.radius ||
                 this.pos.x + this.vy * dt < this.radius
@@ -95,24 +105,22 @@
     }
 
     function collision(a, b) {
-/*
-        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<-7){
-            a.pos.x = -50;
-            a.pos.y = -590;
+        if(!(a.downflag)){
+        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + a.vx) - (b.pos.x + b.vx))**2 + ((a.pos.y + a.vy) - (b.pos.y + b.vy))**2) > 0){
+            if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
+                let ax_save = a.vx;
+                let ay_save = a.vy;
+                let bx_save = b.vx;
+                let by_save = b.vy;
+                let a_mass = a.radius**2
+                let b_mass = b.radius**2
+                
+                a.vx = (a.mass * ax_save + 2 * b.mass * bx_save - b.mass * ax_save)/(a.mass+b.mass);
+                a.vy = (a.mass * ay_save + 2 * b.mass * by_save - b.mass * ay_save)/(a.mass+b.mass)
+                b.vx = (b.mass * bx_save + 2 * a.mass * ax_save - a.mass * bx_save)/(a.mass+b.mass);
+                b.vy = (b.mass * by_save + 2 * a.mass * ay_save - a.mass * by_save)/(a.mass+b.mass);
+            }
         }
-*/
-        if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
-            let ax_save = a.vx;
-            let ay_save = a.vy;
-            let bx_save = b.vx;
-            let by_save = b.vy;
-            let a_mass = a.radius**2
-            let b_mass = b.radius**2
-            
-            a.vx = (a.mass * ax_save + 2 * b.mass * bx_save - b.mass * ax_save)/(a.mass+b.mass);
-            a.vy = (a.mass * ay_save + 2 * b.mass * by_save - b.mass * ay_save)/(a.mass+b.mass)
-            b.vx = (b.mass * bx_save + 2 * a.mass * ax_save - a.mass * bx_save)/(a.mass+b.mass);
-            b.vy = (b.mass * by_save + 2 * a.mass * ay_save - a.mass * by_save)/(a.mass+b.mass);
         }
     }
 
@@ -157,6 +165,9 @@
     var tvx = 0;
     var tvy = 0;
     var ballnum = 0;
+    var cradius = true;
+    var move = false;
+
     
     function onDown(e) {
         e.preventDefault();
@@ -177,7 +188,11 @@
                 y: ty,
             };
         balls.push(new Ball(tpos));
+        balls[ballnum-1].changeradiusflag = true;
+        balls[ballnum-1].downflag = true;
     }
+
+
 
     function onMove(e) {
         e.preventDefault();
@@ -197,6 +212,9 @@
     function onUp(e) {
         balls[ballnum-1].vx = tvx;
         balls[ballnum-1].vy = tvy;
+        balls[ballnum-1].changeradiusflag = false;
+        balls[ballnum-1].downflag = false;
+
     }
 
     canvas.addEventListener('mousedown', onDown, false);

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="button" />
+        <title>button class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+    </style>
+
+    <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+        var question = 0;
+        var answer = 0;
+        var index = 1;
+        function mod(a,b){return(a*b<0)*b+a%b};
+
+        let CP = [];
+        for(let i=0; i < 100; i++){
+            CP.push(Math.floor(Math.random()*3));
+        }
+
+        function drawCP(){
+            const rock = new Image()
+            const paper = new Image()
+            const scissors = new Image()
+            rock.src = "/command_game/rock.png";
+            paper.src = "/command_game/paper.png";
+            scissors.src = "/command_game/scissors.png";
+            
+            if(CP[index] == 0){
+                ctx.drawImage(rock, canvas.width/2-70, canvas.height/2-50, 150, 150);
+            }
+            else if(CP[index] == 1){
+                ctx.drawImage(paper, canvas.width/2-70, canvas.height/2-50, 150, 150);
+            }
+            else{
+                ctx.drawImage(scissors, canvas.width/2-70, canvas.height/2-50, 150, 150);
+            }
+        }
+        
+
+        function drawmessage(a){
+            var a;
+            var mess = ["ジャンケン", "ポン"]
+            ctx.fillStyle = "black";
+            ctx.font = "bold 30px Arial";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = 'center';
+            ctx.fillText(mess[a], 160, 100);
+        }
+
+        drawmessage(0);
+
+        class Button{
+            constructor(){
+                this.x;
+                this.y;
+                this.buttonWidth = 100;
+                this.buttonHeight = 30;
+                this.buttonDown = false;
+                this.buttonText;
+            };
+
+            drawbutton() {
+                if(!this.buttondown){
+                    ctx.beginPath();
+                    ctx.fillStyle = "#eee";
+                    ctx.fillRect(this.x, this.y, this.buttonWidth, this.buttonHeight);
+                    ctx.fill();
+                    ctx.fillStyle = "#eee";
+                    ctx.rect(this.x, this.y, this.buttonWidth, this.buttonHeight);
+
+                    ctx.strokeStyle = "green";
+                    ctx.fillStyle = "green"
+                    ctx.font = "bold 15px Arial";
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.buttonText, this.x+this.buttonWidth/2, this.y+16);
+                    ctx.stroke();
+                    
+                }
+                if(this.buttonDown){
+                    ctx.beginPath();
+                    ctx.fillStyle = "green";
+                    ctx.fillRect(this.x, this.y, this.buttonWidth, this.buttonHeight);
+                    ctx.fill();
+                    ctx.strokeStyle = "#eee";
+                    ctx.fillStyle = "#eee"
+                    ctx.font = "bold 15px Arial";
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.buttonText, this.x+this.buttonWidth/2, this.y+16);
+                    ctx.stroke();
+                };
+            };
+        };
+
+        let buttons = [];
+
+        buttons.push(new Button());
+        buttons[0].x = 40;
+        buttons[0].y = 500;
+        buttons[0].buttonText = "グー";
+        buttons[0].drawbutton();
+
+        buttons.push(new Button());
+        buttons[1].x = 180;
+        buttons[1].y = 500;
+        buttons[1].buttonText = "チョキ";
+        buttons[1].drawbutton();
+
+        buttons.push(new Button());
+        buttons[2].x = 110;
+        buttons[2].y = 550;
+        buttons[2].buttonText = "パー";
+        buttons[2].drawbutton();
+    
+
+
+        function buttonCheck(a=0, b=0){
+            for(let i = 0; i < buttons.length; i++){
+                buttons[i].buttonDown = false;
+                if(buttons[i].x < a && buttons[i].y < b && a < buttons[i].x + buttons[i].buttonWidth && b < (buttons[i].y + buttons[i].buttonHeight)){
+                    buttons[i].buttonDown = true;
+                };
+                buttons[i].drawbutton();
+            }
+        }
+        
+        function update(){
+            if(buttons[0].buttonDown){
+                drawmessage(1);
+                drawCP();
+            };
+            if(buttons[1].buttonDown){
+                drawmessage(1);
+                drawCP();
+            };
+            if(buttons[2].buttonDown){
+                drawmessage(1);
+                drawCP();
+            };
+
+        }
+
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mouseup', onUp, false);
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchend', onUp, false);
+
+        function onDown(e) {
+            e.preventDefault();
+            ctx.clearRect( 0, 0, canvas.width, canvas.height );
+            
+            var offsetX = canvas.getBoundingClientRect().left;
+            var offsetY = canvas.getBoundingClientRect().top;
+
+            if(e.clientX){
+            a = e.clientX - offsetX;
+            b = e.clientY - offsetY;
+            }else{
+                var touch1 = e.touches[0];
+                a = e.touches[0].clientX - offsetX;
+                b = e.touches[0].clientY - offsetY;
+            }
+            buttonCheck(a,b);
+            update();
+            index++;
+        }
+
+        function onUp(e) {
+            e.preventDefault();
+            buttonCheck();
+        }
+    </script>
+
+  </body>
+
+</html>

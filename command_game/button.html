@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="button" />
+        <title>button class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+    </style>
+
+    <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+        var question = 0;
+        var answer = 0;
+        function mod(a,b){return(a*b<0)*b+a%b};
+
+        let message = [
+            ['1. 車を運転する場合、必ずシートベルトを着用しなくてはならない。', "正解！同乗者も着用義務があります。", '不正解！同乗者も着用義務があります。'],
+            ['2. 雨の日は、気をつけて運転しなければならない。', "正解！晴れていても気をつけて運転する必要があります。", '不正解！晴れていても気をつけて運転する必要があります。'],
+            ['3. 速度標識がない道路は、80km/h以上で運転してはいけない。', "不正解!速度標識がない道路の制限速度は60km/h以上なので、80km/hはもちろん速度オーバーとなります。", '正解!速度標識がない道路の制限速度は60km/h以上なので、80km/hはもちろん速度オーバーとなります。'],
+            ['4. 雨の降り始めは路面が滑りやすいので、急ブレーキをかけるのは危険である。', "不正解！設問のとおり。雨の降り始めは特に路面が滑りやすくなっています。", '正解！設問のとおり。雨の降り始めは特に路面が滑りやすくなっています。'],
+            ['5. 交通事故で頭に衝撃を受けたら、外傷がない場合でも医師の診断を受けたほうがよい。', "不正解!設問の通り。", '正解!設問の通り。'],
+            ['6. 制限速度は、いかなる場合も守らなくてはならない。', "不正解!設問の通り。パトカー・救急車・消防車などの緊急車両も、高速自動車国道の本線上は時速100km、それ以外の道路では時速80kmと制限速度が決められています。", '正解!設問の通り。パトカー・救急車・消防車などの緊急車両も、高速自動車国道の本線上は時速100km、それ以外の道路では時速80kmと制限速度が決められています。'],
+            ['7. 原動機付自転車は、50km/hを超えて運転してはいけない。', "正解!正しくは「30km/hを超えて運転してはいけない」です。", '不正解!正しくは「30km/hを超えて運転してはいけない」です。'],
+            ['8. 運転中にスマートフォンを操作してはいけない。', "不正解!設問のとおり。", '正解!設問のとおり。'],
+            ['9. 疲れているときは危険を察知してから判断するまでに時間がかかるので、空走距離は長くなる。', "正解!心配事がある時、病気の時なども空走距離は長くなります。", '不正解!心配事がある時、病気の時なども空走距離は長くなります。'],
+            ['10. 車を運転する時は、交通標識を守らなくてはならない', "不正解!設問のとおり。", '正解!設問のとおり。']
+        ];
+
+        function drawmessage(){
+            ctx.clearRect(0, 0, 320, 300);
+            ctx.fillStyle = "black";
+            ctx.font = "bold 10px Arial";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = 'left';
+            ctx.fillText(message[question][answer], 10, 100);
+        }
+
+        drawmessage();
+
+        class Button{
+            constructor(){
+                this.x;
+                this.y;
+                this.buttonWidth = 100;
+                this.buttonHeight = 30;
+                this.buttonDown = false;
+                this.buttonText;
+            };
+
+            drawbutton() {
+                if(!this.buttondown){
+                    ctx.beginPath();
+                    ctx.fillStyle = "#eee";
+                    ctx.fillRect(this.x, this.y, this.buttonWidth, this.buttonHeight);
+                    ctx.fill();
+                    ctx.fillStyle = "#eee";
+                    ctx.rect(this.x, this.y, this.buttonWidth, this.buttonHeight);
+
+                    ctx.strokeStyle = "green";
+                    ctx.fillStyle = "green"
+                    ctx.font = "bold 15px Arial";
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.buttonText, this.x+this.buttonWidth/2, this.y+16);
+                    ctx.stroke();
+                    
+                }
+                if(this.buttonDown){
+                    ctx.beginPath();
+                    ctx.fillStyle = "green";
+                    ctx.fillRect(this.x, this.y, this.buttonWidth, this.buttonHeight);
+                    ctx.fill();
+                    ctx.strokeStyle = "#eee";
+                    ctx.fillStyle = "#eee"
+                    ctx.font = "bold 15px Arial";
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.buttonText, this.x+this.buttonWidth/2, this.y+16);
+                    ctx.stroke();
+                }
+            };
+        };
+
+        var buttons = [];
+
+        buttons.push(new Button());
+        buttons[0].x = 40;
+        buttons[0].y = 500;
+        buttons[0].buttonText = "Yes";
+        buttons[0].drawbutton();
+
+        buttons.push(new Button());
+        buttons[1].x = 180;
+        buttons[1].y = 500;
+        buttons[1].buttonText = "No";
+        buttons[1].drawbutton();
+
+        buttons.push(new Button());
+        buttons[2].x = 110;
+        buttons[2].y = 550;
+        buttons[2].buttonText = "Next";
+        buttons[2].drawbutton();
+    
+
+
+        function buttonCheck(a=0, b=0){
+            for(let i = 0; i < buttons.length; i++){
+                buttons[i].buttonDown = false;
+                if(buttons[i].x < a && buttons[i].y < b && a < buttons[i].x + buttons[i].buttonWidth && b < (buttons[i].y + buttons[i].buttonHeight)){
+                    buttons[i].buttonDown = true;
+                };
+                buttons[i].drawbutton();
+            }
+        }
+        
+        function updateMessage(){
+            if(buttons[0].buttonDown){
+                answer = 1;
+            };
+            if(buttons[1].buttonDown){
+                answer = 2;
+            };
+            if(buttons[2].buttonDown){
+                answer = 0;
+                question++;
+            };
+
+        }
+
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mouseup', onUp, false);
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchend', onUp, false);
+
+        function onDown(e) {
+            e.preventDefault();
+            var offsetX = canvas.getBoundingClientRect().left;
+            var offsetY = canvas.getBoundingClientRect().top;
+
+            if(e.clientX){
+            a = e.clientX - offsetX;
+            b = e.clientY - offsetY;
+            }else{
+                var touch1 = e.touches[0];
+                a = e.touches[0].clientX - offsetX;
+                b = e.touches[0].clientY - offsetY;
+            }
+            buttonCheck(a,b);
+            updateMessage();
+            drawmessage();
+        }
+
+        function onUp(e) {
+            e.preventDefault();
+            buttonCheck();
+        }
+    </script>
+
+  </body>
+
+</html>

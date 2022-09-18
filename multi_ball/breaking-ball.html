@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="hot iphone" />
+        <meta property="og:image" content="https://2.bp.blogspot.com/-nm6b6DkLzgk/WzC95qlZwFI/AAAAAAABM84/VTT_0zPoQRwDtVGv7sXONTproI8bV-bxwCLcBGAs/s800/samui_man_hokkairo.png" />
+        <title>ball class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+  </style>
+
+    <body onload="init()">
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+        var pos = {
+        x: 100,
+        y: 100,
+        };
+        var numberOfBalls = 0;
+        var dt = 0.1;
+
+
+    function mod(a,b){return(a*b<0)*b+a%b}
+
+    class Ball {
+        constructor(pos) {
+            this.pos = pos;
+            this.radius = 0;
+            this.color = randomColor();
+            this.vx = 0;
+            this.vy = 0;
+            this.mass = this.radius ** 2;
+            this.changeradiusflag = false;
+            this.downflag = false;
+        }
+
+        drawBall() {
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+        
+        updateBall() {
+            if(this.changeradiusflag) {
+                balls[ballnum-1].radius += 0.1;
+                balls[ballnum-1].radius %= 30;
+            }
+            this.mass = this.radius ** 2;
+            if((this.pos.x + this.vx * dt < this.radius) && (this.vx < 0))
+            {
+                this.vx = -this.vx;
+            }
+            if((this.pos.x + this.vx * dt > canvas.width - this.radius) && (this.vx > 0))
+            {
+                this.vx = -this.vx;
+            }
+            if((this.pos.y + this.vy * dt < this.radius) && (this.vy < 0))
+            {
+                this.vy = -this.vy;
+            }
+            if((this.pos.y + this.vy * dt > canvas.height - this.radius) && (this.vy > 0))
+            {
+                this.vy = -this.vy;
+            }
+            this.vx += xforce(this.x, this.y, this.vx, this.vy);
+            this.vy += yforce(this.x, this.y, this.vx, this.vy);
+            this.pos.x += this.vx * dt;
+            this.pos.y += this.vy * dt;
+
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+
+            totalscore();
+//            ctx.fillText("速度:" + ((vx**2 + vy ** 2)**(1/2)).toFixed(0), 10, 140);
+
+        }
+    }
+
+    function totalscore(){
+        let tscore = [0, 0];
+        for (let i = 0; i < ballnum; i++){
+            tscore[0] += balls[i].mass * (balls[i].vx + balls[i].vy);
+            tscore[1] += balls[i].mass * (balls[i].vx**2 + balls[i].vy**2);
+        }
+
+        ctx.fillStyle = "#0095DD";
+        ctx.font = "15px Arial";
+        ctx.fillText("運動量:" + (tscore[0]).toFixed(0), 10, 20);
+        ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
+    }
+
+    function xforce(x, y, vx, vy){
+        return 0;
+    }
+
+    function yforce(x, y, vx, vy){
+        return 0;
+    }
+
+    function collision(a, b) {
+        if(!(b.downflag)){
+            if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + a.vx) - (b.pos.x + b.vx))**2 + ((a.pos.y + a.vy) - (b.pos.y + b.vy))**2) > 0){
+                if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
+                    let ax_save = a.vx;
+                    let ay_save = a.vy;
+                    let bx_save = b.vx;
+                    let by_save = b.vy;
+                    let a_mass = a.radius**2
+                    let b_mass = b.radius**2
+                    
+                    a.vx = (a.mass * ax_save + 2 * b.mass * bx_save - b.mass * ax_save)/(a.mass+b.mass);
+                    a.vy = (a.mass * ay_save + 2 * b.mass * by_save - b.mass * ay_save)/(a.mass+b.mass)
+                    b.vx = (b.mass * bx_save + 2 * a.mass * ax_save - a.mass * bx_save)/(a.mass+b.mass);
+                    b.vy = (b.mass * by_save + 2 * a.mass * ay_save - a.mass * by_save)/(a.mass+b.mass);
+                }
+            }
+        }
+    }
+
+    function randomColor() {
+        const rc1 = Math.random() * 16777215;
+        const rc2 = Math.floor(rc1);
+        const rc3 = rc2.toString(16);
+        return "#" + rc3;
+    }
+
+    function targetPos() {
+        pos = {
+            x: 170,
+            y: 100
+        };
+        return pos;
+    }
+
+    var balls = [];
+
+
+
+
+
+    setInterval(
+        function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let index = 0; index < balls.length; index++) {
+                for (let i = 0; i < balls.length; i++){
+                    if(index < i){
+                        collision(balls[index], balls[i]);
+                    };
+                };
+                balls[index].updateBall();
+            };
+    },1);
+
+    var tx;
+    var ty;
+    var tx2;
+    var ty2;
+    var tvx = 0;
+    var tvy = 0;
+    var ballnum = 0;
+    var cradius = true;
+    var move = false;
+
+    
+    function onDown(e) {
+        e.preventDefault();
+        tvx = 0;
+        tvy = 0;
+        ballnum++;
+        var offsetX = canvas.getBoundingClientRect().left;
+        var offsetY = canvas.getBoundingClientRect().top;
+        if(e.clientX){
+            tx = e.clientX - offsetX;
+            ty = e.clientY - offsetY;
+        }else{
+            tx = e.touches[0].clientX - offsetX;
+            ty = e.touches[0].clientY - offsetY;  
+        }
+        var tpos = {
+                x: tx,
+                y: ty,
+            };
+        balls.push(new Ball(tpos));
+        balls[ballnum-1].changeradiusflag = true;
+        balls[ballnum-1].downflag = true;
+    }
+
+
+
+    function onMove(e) {
+        e.preventDefault();
+        var offsetX2 = canvas.getBoundingClientRect().left;
+        var offsetY2 = canvas.getBoundingClientRect().top;
+        if(e.clientX){
+            tx2 = e.clientX - offsetX2;
+            ty2 = e.clientY - offsetY2;
+        }else{
+            tx2 = e.touches[0].clientX - offsetX2;
+            ty2 = e.touches[0].clientY - offsetY2;  
+        }
+        tvx = 0.1*(tx - tx2);
+        tvy = 0.1*(ty - ty2);
+    }
+    
+    function onUp(e) {
+        balls[ballnum-1].vx = tvx;
+        balls[ballnum-1].vy = tvy;
+        balls[ballnum-1].changeradiusflag = false;
+        balls[ballnum-1].downflag = false;
+
+    }
+
+    canvas.addEventListener('mousedown', onDown, false);
+    canvas.addEventListener('mousemove', onMove, false);
+    canvas.addEventListener('mouseup', onUp, false);
+
+    canvas.addEventListener('touchstart', onDown, false);
+    canvas.addEventListener('touchmove', onMove, false);
+    canvas.addEventListener('touchend', onUp, false);
+
+
+    </script>
+
+  </body>
+
+</html>

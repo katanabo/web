@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>touch sample</title>
+  </head>
+
+  <style>
+    canvas {background: #eee; display: block; margin: 20px auto;}
+    canvas{
+      touch-action: none;
+    }
+  </style>
+
+  <body onload="init()">
+    <canvas id="mycanvas" width="320" height="320"></canvas>
+
+    <script>
+      
+        var canvas = document.getElementById( "mycanvas" );
+        var ctx = canvas.getContext("2d");
+        var x, y, relX, relY, objX, objY;
+
+        var click = false;
+
+        let interval;
+        var offsetX = canvas.getBoundingClientRect().left;
+        var offsetY = canvas.getBoundingClientRect().top;
+
+        let savex = [];
+        let savey = [];
+        
+        function onDown(e) {
+
+            click = true;
+            if(e.clientX){
+                x = e.clientX - offsetX;
+                y = e.clientY - offsetY;
+            }else{
+                x = e.touches[0].clientX - offsetX;
+                y = e.touches[0].clientY - offsetY;  
+            }
+            ctx.beginPath();
+            ctx.rect(x-120, y-120, 100, 100);
+            ctx.stroke();
+        }
+        
+        function onMove(e) {
+            if(click){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if(e.clientX){
+                    x = e.clientX - offsetX;
+                    y = e.clientY - offsetY;
+                }else{
+                    x = e.touches[0].clientX - offsetX;
+                    y = e.touches[0].clientY - offsetY;  
+                }
+                ctx.beginPath();
+                ctx.rect(x-120, y-120, 100, 100);
+                ctx.stroke();
+                savex.push(x);
+                savey.push(y);
+
+                for(let i = 0; i < savex.length; i++){
+                    ctx.beginPath();
+                    ctx.rect(x+savex[i]*100/320-120, y+savey[i]*100/320-120, 1, 1);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function onUp(e) {
+            click = false;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            savex = [];
+            savey = [];
+        }
+
+
+
+
+
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mousemove', onMove, false);
+        canvas.addEventListener('mouseup', onUp, false);
+
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchmove', onMove, false);
+        canvas.addEventListener('touchend', onUp, false);
+
+      </script>
+
+
+  </body>
+
+</html>

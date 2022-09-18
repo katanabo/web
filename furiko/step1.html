@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="hot iphone" />
+        <meta property="og:image" content="https://2.bp.blogspot.com/-nm6b6DkLzgk/WzC95qlZwFI/AAAAAAABM84/VTT_0zPoQRwDtVGv7sXONTproI8bV-bxwCLcBGAs/s800/samui_man_hokkairo.png" />
+        <title>ball class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+  </style>
+
+    <body onload="init()">
+    <canvas id="mycanvas" width="320" height="580"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+
+        var dt = 0.1;
+
+    function mod(a,b){return(a*b<0)*b+a%b}
+
+
+    class furiko {
+        constructor() {
+            this.nlength = 190;
+            this.fulcrumx = 160;
+            this.fulcrumy = 100;
+            this.x = this.fulcrumx;
+            this.y = this.fulcrumy + this.nlength;
+            this.vx = 0;
+            this.vy = 0;
+            this.xforce = 0;
+            this.yforce = 0;
+            this.theta = 0;
+        }
+        drawFuriko() {
+            ctx.beginPath();
+            ctx.moveTo(this.fulcrumx, this.fulcrumy);
+            ctx.lineTo(this.x, this.y);
+            ctx.lineWidth = 10 ;
+            ctx.stroke();
+        }
+        calc(){
+            this.theta = Math.atan()
+        }
+        update(){
+            this.vx += (this.xforce * dt);
+            this.vy += (this.yforce * dt);
+            this.x += this.vx * dt;
+            this.y += this.vy * dt;
+        }
+    }
+
+    let furiko1 = new furiko();
+
+    setInterval(
+        function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            furiko1.update();
+            furiko1.drawFuriko();
+    },1);
+
+    
+    function onDown(e) {
+        e.preventDefault();
+    }
+    
+    function onUp(e) {
+    }
+
+    canvas.addEventListener('mousedown', onDown, false);
+    canvas.addEventListener('mouseup', onUp, false);
+
+    canvas.addEventListener('touchstart', onDown, false);
+    canvas.addEventListener('touchend', onUp, false);
+
+
+    </script>
+
+  </body>
+
+</html>

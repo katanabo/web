@@ -9,7 +9,7 @@
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "http://192.168.2.151:5500/HTML+CSS+JavaScript/slider.html",
+            "url": "http://127.0.0.1:3000/furiko/step5_bound-gravity.html",
             "webRoot": "${workspaceFolder}"
         }
     ]

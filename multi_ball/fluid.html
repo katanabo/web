@@ -45,9 +45,9 @@
     class Ball {
         constructor(pos) {
             this.pos = pos;
-            this.radius = 0;
+            this.radius = 6;
             this.color = randomColor();
-            this.vx = 0;
+            this.vx = 5*Math.random()-2.5;
             this.vy = 0;
             this.mass = this.radius ** 2;
             this.changeradiusflag = false;
@@ -178,10 +178,9 @@
                     if(index < i){
                         collision(balls[index], balls[i]);
                     };
-                    if(index != i){
-                        gravitation(balls[index] , balls[i]);
-                    }
-                    drawconnect(balls[index], balls[i]);
+//                    if(index != i){
+//                        gravitation(balls[index] , balls[i]);
+//                    }
                 };
             };
             for(let index = 0; index < balls.length; index++){                
@@ -214,16 +213,15 @@
         y: 350,
     };
 
-    var dragging1 = false;
-    var dragging2 = false;
-    var dragging3 = false;
 
-    balls.push(new Ball(ipos1));
-    balls.push(new Ball(ipos2));
-    balls.push(new Ball(ipos3));
-    balls[0].radius = 15
-    balls[1].radius = 20
-    balls[2].radius = 35
+    for(let i = 0; i < 1000; i++){
+        var pos = {
+            x: 320*Math.random(),
+            y: 570*Math.random(),
+        }
+        balls.push(new Ball(pos))
+    }
+
     
     function onDown(e) {
         e.preventDefault();
@@ -236,16 +234,6 @@
             tx = e.touches[0].clientX - offsetX;
             ty = e.touches[0].clientY - offsetY;  
         }
-        if((balls[0].pos.x - tx)**2 + (balls[0].pos.y - ty)**2 < balls[0].radius ** 2){
-            balls[0].downflag = true;
-        }
-        if((balls[1].pos.x - tx)**2 + (balls[1].pos.y - ty)**2 < balls[1].radius ** 2){
-            balls[1].downflag = true;
-        }
-        if((balls[2].pos.x - tx)**2 + (balls[2].pos.y - ty)**2 < balls[2].radius ** 2){
-            balls[2].downflag = true;
-        }
-
     }
 
 
@@ -261,25 +249,9 @@
             tx2 = e.touches[0].clientX - offsetX2;
             ty2 = e.touches[0].clientY - offsetY2;  
         }
-        if(balls[0].downflag){
-            balls[0].pos.x = tx2;
-            balls[0].pos.y = ty2;
-        }
-        if(balls[1].downflag){
-            balls[1].pos.x = tx2;
-            balls[1].pos.y = ty2;
-        }
-        if(balls[2].downflag){
-            balls[2].pos.x = tx2;
-            balls[2].pos.y = ty2;
-        }
     }
     
     function onUp(e) {
-        balls[0].downflag = false;
-        balls[1].downflag = false;
-        balls[2].downflag = false;
-
     }
 
     canvas.addEventListener('mousedown', onDown, false);

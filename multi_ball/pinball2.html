@@ -120,7 +120,7 @@
 
     function collision(a, b) {
         if(!(b.downflag)){
-            if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + a.vx) - (b.pos.x + b.vx))**2 + ((a.pos.y + a.vy) - (b.pos.y + b.vy))**2) > 0){
+            if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + dt * a.vx) - (b.pos.x + dt * b.vx))**2 + ((a.pos.y + dt * a.vy) - (b.pos.y + dt * b.vy))**2) > 0){
                 if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
                     let a_mass = a.radius**2
                     let b_mass = b.radius**2

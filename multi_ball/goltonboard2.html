@@ -78,15 +78,15 @@
 
             if((this.pos.x + this.vx * dt < this.radius) && (this.vx < 0))
             {
-                this.vx = -0.3*this.vx;
+                this.vx = -1.0001*this.vx;
             }
             if((this.pos.x + this.vx * dt > canvas.width - this.radius) && (this.vx > 0))
             {
-                this.vx = -0.3*this.vx;
+                this.vx = -1.0001*this.vx;
             }
             if((this.pos.y + this.vy * dt < this.radius) && (this.vy < 0))
             {
-                this.vy = -0.3*this.vy;
+                this.vy = -1.0001*this.vy;
             }
             if((this.pos.y + this.vy * dt > canvas.height - this.radius) && (this.vy > 0))
             {
@@ -127,7 +127,7 @@
                     let a_after = 0;
                     let b_after = 0;
 
-                    a_after = 0.9*(a.mass * a_save + 2 * b.mass * b_save - b.mass * a_save)/(a.mass+b.mass);
+                    a_after = (a.mass * a_save + 2 * b.mass * b_save - b.mass * a_save)/(a.mass+b.mass);
                     b_after = (b.mass * b_save + 2 * a.mass * a_save - a.mass * b_save)/(a.mass+b.mass);
                     
                     a.vx = a.vx - a_save * norm[0] + a_after * norm[0]; 
@@ -233,7 +233,7 @@
 
         balls.push(new Ball(pos)),10
         }
-    ,200);
+    ,100);
 
 
 

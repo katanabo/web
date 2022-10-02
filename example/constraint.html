@@ -1,0 +1,312 @@
+<html>
+	<head>
+		<title>Physics</title>
+		<style>
+		html{
+			font-family: "Comic Sans MS";
+			text-align:center;
+		}
+		canvas{
+			background:white;
+			width:300px;
+			height:300px;
+		}
+		body{
+			background:lightblue;
+		}
+		</style>
+		<script>
+			function main(){
+				var c= initializeCanvas("canvas", 300, 300);
+			
+				simulatePhysics(c);
+				c.addEventListener('mousedown',function(e){
+					var location=getCursorPosition(e);
+					var segmentIndex=getNearestSegment(location);
+					SEGMENTS.splice(segmentIndex,1)
+				});
+				
+			}
+			
+			function getNearestSegment(location){
+				var minDistance=Infinity;
+				var index=0;
+				for(var i=0;i<SEGMENTS.length;i++){
+					var midPoint=average(SEGMENTS[i].particleA.location,
+										 SEGMENTS[i].particleB.location);
+					var dist=distance(location,midPoint);
+					
+					if(dist<minDistance){
+						minDistance=dist;
+						index=i;
+					}
+				}
+				return index;
+			}
+			
+			class Segment{
+				// this.particleA
+				constructor(particleA, particleB){
+					this.particleA=particleA;
+					this.particleB=particleB;
+					this.length=distance(particleA.location,
+						                 particleB.location);
+				}
+				
+				draw(canvas){
+					drawLine(canvas,this.particleA.location,
+					                this.particleB.location);
+				}
+			}
+			class Particle{
+				//static testStaticAttribute=16;
+				
+				constructor(location, velocity, isStatic=false){
+					this.location=location;
+					this.isStatic=isStatic;
+					//this.velocity=velocity;
+					this.oldLocation=subtractVectors(location,velocity)
+				}
+				
+				draw(canvas){
+					drawRegularPolygon(canvas,this.location,3,8);
+				}
+			}
+			
+			var PARTICLES=[];
+			var SEGMENTS=[];
+			var G=[0,0.1];
+			function simulatePhysics(canvas){
+				PARTICLES.push(new Particle([50,50],[9.8,0],true));
+				PARTICLES.push(new Particle([30,90],[1.2,0]));
+				PARTICLES.push(new Particle([100,110],[1.3,0]));
+				PARTICLES.push(new Particle([100,50],[9.6,0]));
+				
+				SEGMENTS.push(new Segment(PARTICLES[0],PARTICLES[1]));
+				SEGMENTS.push(new Segment(PARTICLES[1],PARTICLES[2]));
+				SEGMENTS.push(new Segment(PARTICLES[2],PARTICLES[3]));
+				SEGMENTS.push(new Segment(PARTICLES[3],PARTICLES[0]));
+				SEGMENTS.push(new Segment(PARTICLES[0],PARTICLES[2]));
+				//SEGMENTS.push(new Segment(PARTICLES[1],PARTICLES[3]));
+				
+				//legs
+				PARTICLES.push(new Particle([130,260],[0,0]));
+				PARTICLES.push(new Particle([130,190],[0,0]));
+				PARTICLES.push(new Particle([150,210],[0,0]));
+				PARTICLES.push(new Particle([170,190],[0,0]));
+				PARTICLES.push(new Particle([170,260],[0,0]));
+				//torso
+				PARTICLES.push(new Particle([120,150],[0,0]));
+				PARTICLES.push(new Particle([180,150],[0,0]));
+				PARTICLES.push(new Particle([150,130],[0,0]));
+				//hands
+				PARTICLES.push(new Particle([115,210],[0,0]));
+				PARTICLES.push(new Particle([185,210],[0,0]));
+
+				//legs
+				SEGMENTS.push(new Segment(PARTICLES[4],PARTICLES[5]));
+				SEGMENTS.push(new Segment(PARTICLES[5],PARTICLES[6]));
+				SEGMENTS.push(new Segment(PARTICLES[6],PARTICLES[4]));
+				SEGMENTS.push(new Segment(PARTICLES[6],PARTICLES[7]));
+				SEGMENTS.push(new Segment(PARTICLES[7],PARTICLES[8]));
+				SEGMENTS.push(new Segment(PARTICLES[8],PARTICLES[6]));
+				SEGMENTS.push(new Segment(PARTICLES[5],PARTICLES[7]));
+				//torso
+				SEGMENTS.push(new Segment(PARTICLES[5],PARTICLES[9]));
+				SEGMENTS.push(new Segment(PARTICLES[9],PARTICLES[7]));
+				SEGMENTS.push(new Segment(PARTICLES[7],PARTICLES[10]));
+				SEGMENTS.push(new Segment(PARTICLES[10],PARTICLES[9]));
+				SEGMENTS.push(new Segment(PARTICLES[9],PARTICLES[11]));
+				SEGMENTS.push(new Segment(PARTICLES[10],PARTICLES[11]));
+				//hands
+				SEGMENTS.push(new Segment(PARTICLES[9],PARTICLES[12]));
+				SEGMENTS.push(new Segment(PARTICLES[10],PARTICLES[13]));
+				
+				setInterval(function(){
+					clearCanvas(canvas);
+					
+					// update locations of particles
+					for(var i=0;i<PARTICLES.length;i++){
+						if(!PARTICLES[i].isStatic){
+							var velocity=
+							subtractVectors(PARTICLES[i].location,
+											PARTICLES[i].oldLocation);
+							
+							var newLocation = 
+								addVectors(PARTICLES[i].location,velocity);
+								
+							var newLocation = 
+								addVectors(newLocation,G);
+								
+							
+							
+							PARTICLES[i].oldLocation=PARTICLES[i].location;
+							PARTICLES[i].location=newLocation;
+						}
+					}
+					
+					// applying constraints
+					var iterations=100;
+					while (iterations>0){
+						for(var i=0;i<SEGMENTS.length;i++){
+							var newLength=distance(SEGMENTS[i].particleA.location,
+												   SEGMENTS[i].particleB.location);
+							var desiredDistance=SEGMENTS[i].length;
+							var diff=newLength-desiredDistance;
+							
+							var vector=subtractVectors(SEGMENTS[i].particleA.location,
+													   SEGMENTS[i].particleB.location)
+							var normalizedVector=normalizeVector(vector);
+							var scaledVector=scaleVector(normalizedVector,diff/2);
+							
+							
+							if(!SEGMENTS[i].particleB.isStatic){
+								SEGMENTS[i].particleB.location=addVectors(SEGMENTS[i].particleB.location,
+															scaledVector);
+							}								
+															
+							var oppositeVector=scaleVector(scaledVector,-1);
+							if(!SEGMENTS[i].particleA.isStatic){							
+								SEGMENTS[i].particleA.location=addVectors(SEGMENTS[i].particleA.location,
+															oppositeVector);
+							}
+						}
+						iterations--;
+					}
+					
+					for(var i=0;i<PARTICLES.length;i++){
+						if(PARTICLES[i].location[0]<0){
+							PARTICLES[i].location[0]=0;
+						}
+						if(PARTICLES[i].location[0]>300){
+							PARTICLES[i].location[0]=300;
+						}
+						if(PARTICLES[i].location[1]<0){
+							PARTICLES[i].location[1]=0;
+						}
+						if(PARTICLES[i].location[1]>300){
+							PARTICLES[i].location[1]=300;
+						}
+					}
+					
+					
+					
+					for(var i=0;i<PARTICLES.length;i++){
+						PARTICLES[i].draw(canvas);
+					}
+					
+					for(var i=0;i<SEGMENTS.length;i++){
+						SEGMENTS[i].draw(canvas);
+					}
+					
+				},40);
+			}
+			
+			function distance(v1,v2){
+				return Math.sqrt((v1[0]-v2[0])*(v1[0]-v2[0])+
+						         (v1[1]-v2[1])*(v1[1]-v2[1]));
+				// OR
+				return getMagnitude(subtractVectors(v1,v2))
+			}
+			
+			function average(v1, v2){
+				var newV=[
+					(v1[0]+v2[0])/2,
+					(v1[1]+v2[1])/2
+				];
+				return newV;
+			}
+			function scaleVector(vector, scaler){
+				var newV=[
+					vector[0]*scaler,
+					vector[1]*scaler
+				];
+				return newV;
+			}
+			
+			function getMagnitude(vector){
+				return Math.sqrt(vector[0]*vector[0]+vector[1]*vector[1]);
+			}
+			
+			function normalizeVector(vector){
+				var magn=getMagnitude(vector);
+				var newV=[
+					vector[0]/magn,
+					vector[1]/magn
+				];
+				return newV;
+			}
+			
+			function addVectors(v1,v2){
+				var newV=[
+					v1[0]+v2[0],
+					v1[1]+v2[1]
+				];
+				return newV;
+			}
+			function subtractVectors(v1,v2){
+				var newV=[
+					v1[0]-v2[0],
+					v1[1]-v2[1]
+				];
+				return newV;
+			}
+			
+			function getCursorPosition(event){
+				console.log(event);
+				var canvas=event.target;
+				var rect = canvas.getBoundingClientRect();
+				var x=event.clientX - rect.left;
+				var y=event.clientY - rect.top;
+				return [x,y];
+			}
+			
+			function clearCanvas(canvas){
+				var ctx = canvas.getContext("2d");
+				ctx.clearRect(0,0,300,300);
+			}
+			
+			function initializeCanvas(canvasID,width,height){
+				var c = document.getElementById(canvasID);
+				var ctx = c.getContext("2d");
+				ctx.canvas.width=width;
+				ctx.canvas.height=height;
+				return c;
+			}
+			
+			
+			function drawLine(canvas,from,to){
+				var ctx = canvas.getContext("2d");
+				ctx.beginPath();
+				ctx.moveTo(from[0], from[1]);
+				ctx.lineTo(to[0], to[1]);
+				ctx.stroke();
+			}
+			function drawRegularPolygon(canvas,location,radius,sides, rotation=0){
+				var ctx = canvas.getContext("2d");
+				ctx.beginPath();
+				var x=location[0]+Math.cos(0+rotation)*radius;
+				var y=location[1]+Math.sin(0+rotation)*radius;
+				ctx.moveTo(x, y);
+				sides/=2;
+				for(var i=Math.PI/sides;i<=Math.PI*2;i+=Math.PI/sides){
+					var x=location[0]+Math.cos(i+rotation)*radius;
+					var y=location[1]+Math.sin(i+rotation)*radius;
+					ctx.lineTo(x, y);
+				}
+				var x=location[0]+Math.cos(0+rotation)*radius;
+				var y=location[1]+Math.sin(0+rotation)*radius;
+				ctx.lineTo(x, y);
+				
+				ctx.stroke();
+			}
+			
+		</script>
+	</head>
+	<body onload="main()">
+		<h1>Physics</h1>
+		<canvas id="canvas"></canvas>
+		<br>
+		Click (mid-point of) links to remove
+	</body>
+</html>

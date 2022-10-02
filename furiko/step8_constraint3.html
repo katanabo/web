@@ -64,17 +64,18 @@
                 balls[index].radius %= 80;
             }
             this.mass = this.radius ** 2;
-            this.yforce += 300;
+            this.yforce += 30;
             constra(balls[0], balls[1]);
             this.vx += this.xforce * dt / this.mass;
             this.vy += this.yforce * dt / this.mass;
             
 
             for (let i = 0; i < balls.length; i++){
+
                 if(index < i){
                     collision(this, balls[i]);
                 };
-                /*
+/*                
                 if(index != i){
                     gravitation(balls[index] , balls[i]);
                 }
@@ -85,19 +86,24 @@
             
             if((this.pos.x + this.vx * dt < this.radius) && (this.vx < 0))
             {
-                this.vx = -this.vx;
+                this.vx = -this.vx
             }
             if((this.pos.x + this.vx * dt > canvas.width - this.radius) && (this.vx > 0))
             {
-                this.vx = -this.vx;
+                this.vx = -this.vx
             }
             if((this.pos.y + this.vy * dt < this.radius) && (this.vy < 0))
             {
-                this.vy = -this.vy;
+                this.vy = -this.vy
+
             }
             if((this.pos.y + this.vy * dt > canvas.height - this.radius) && (this.vy > 0))
             {
-                this.vy = -this.vy;
+                this.vy = -this.vy
+            }
+            if(this.downflag){
+                this.vx = 0;
+                this.vy = 0;
             }
             if(!this.downflag){
                 this.pos.x += this.vx * dt;
@@ -163,11 +169,18 @@
         let FY = a.yforce/a.mass - b.yforce/b.mass;
         let PX = a.pos.x - b.pos.x
         let PY = a.pos.y - b.pos.y;
-        let fab = -(mu/100)*(((a.vx - b.vx)**2+ (a.vy - b.vy)**2) + (FX * PX + FY * PY));
-        a.xforce += -fab * norm[0];
-        a.yforce += -fab * norm[1];
-        b.xforce += fab * norm[0];
-        b.yforce += fab * norm[1];
+        let nl = 50; // natural length
+        let fab = -(mu/nl)*(((a.vx - b.vx)**2+ (a.vy - b.vy)**2) + (FX * PX + FY * PY));
+        let kc = 0.1;
+        let va = a.vx * norm[0] +a.vy * norm[1]
+        let vb = b.vx * norm[0] +b.vy * norm[1]
+
+        let betac = 5;
+
+        a.xforce += -fab * norm[0] - kc*(ablen - nl) * norm[0] - betac * (va-vb) * norm[0];
+        a.yforce += -fab * norm[1] - kc*(ablen - nl) * norm[1] - betac * (va-vb) * norm[1]
+        b.xforce += fab * norm[0] + kc*(ablen - nl) * norm[0] +betac * (vb-va) * norm[0]
+        b.yforce += fab * norm[1] + kc*(ablen - nl) * norm[1] + betac * (vb-va) * norm[1]
         
     }
 
@@ -230,8 +243,8 @@
         y: 100,
     };
     var ipos2 = {
-        x: 200,
-        y: 10,
+        x: 100,
+        y: 50,
     };
     var ipos3 = {
         x: 320,

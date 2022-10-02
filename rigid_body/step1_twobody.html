@@ -26,7 +26,7 @@
         }
   </style>
 
-    <body onload="init()">
+    <body>
     <canvas id="mycanvas" width="320" height="590"></canvas>
 
     <script>
@@ -56,25 +56,19 @@
             this.yforce = 0;
         }
 
-
         updateBall(index){
             this.index = index;
-            if(this.changeradiusflag) {
-                balls[index].radius += 0.1;
-                balls[index].radius %= 80;
-            }
-            this.mass = this.radius ** 2;
-            this.yforce += 300;
-            constra(balls[0], balls[1]);
-            this.vx += this.xforce * dt / this.mass;
-            this.vy += this.yforce * dt / this.mass;
+//            this.yforce += 30;
+//            this.vx += this.xforce * dt / this.mass;
+//            this.vy += this.yforce * dt / this.mass;
             
 
             for (let i = 0; i < balls.length; i++){
+
                 if(index < i){
                     collision(this, balls[i]);
                 };
-                /*
+/*                
                 if(index != i){
                     gravitation(balls[index] , balls[i]);
                 }
@@ -85,19 +79,24 @@
             
             if((this.pos.x + this.vx * dt < this.radius) && (this.vx < 0))
             {
-                this.vx = -this.vx;
+                this.vx = -this.vx
             }
             if((this.pos.x + this.vx * dt > canvas.width - this.radius) && (this.vx > 0))
             {
-                this.vx = -this.vx;
+                this.vx = -this.vx
             }
             if((this.pos.y + this.vy * dt < this.radius) && (this.vy < 0))
             {
-                this.vy = -this.vy;
+                this.vy = -this.vy
+
             }
             if((this.pos.y + this.vy * dt > canvas.height - this.radius) && (this.vy > 0))
             {
-                this.vy = -this.vy;
+                this.vy = -this.vy
+            }
+            if(this.downflag){
+                this.vx = 0;
+                this.vy = 0;
             }
             if(!this.downflag){
                 this.pos.x += this.vx * dt;
@@ -110,17 +109,51 @@
         }
     }
 
-    function totalscore(){
-        let tscore = [0, 0];
-        for (let i = 0; i < ballnum; i++){
-            tscore[0] += balls[i].mass * (balls[i].vx + balls[i].vy);
-            tscore[1] += balls[i].mass * (balls[i].vx**2 + balls[i].vy**2);
+    class Rigid {
+        constructor(balls1, balls2) {
+            this.balls1 = balls1;
+            this.balls2 = balls2;
+            this.m1 = this.balls1.mass;
+            this.m2 = this.balls2.mass;
+            this.x = (this.m2 * this.balls1.pos.x + this.m1 * this.balls2.pos.x)/(this.m1 + this.m2);
+            this.y = (this.m2 * this.balls1.pos.y + this.m1 * this.balls2.pos.y)/(this.m1 + this.m2);
+            this.vgx = 0;
+            this.vgy = 0;
+            this.xforce = 0;
+            this.yforce = 0;
+            this.omega = 10;
+            this.l = 50;
+            this.l1 = (this.m2 * this.l) / (this.m1 + this.m2)
+            this.l2 = (this.m1 * this.l) / (this.m1 + this.m2)
+            this.inertia = this.m1 * this.l1 ** 2 + this.m2 * this.l2 ** 2
+        }
+        updateRigid(){
+            this.mass = this.balls1.mass + this.balls2.mass;
+            this.yforce += 0.01;
+            this.vgx += this.xforce * dt / this.mass;
+            this.vgy += this.yforce * dt / this.mass;
+            this.omega = (this.yforce + this.l1)* dt / this.inertia;
+
+            this.balls1.vx += this.vgx + this.omega * (this.balls1.pos.x - this.x)
+            this.balls1.vy += this.vgy + this.omega * (this.balls1.pos.y - this.y)
+
+            this.balls2.vx += this.vgx + this.omega * (this.balls2.pos.x - this.x)
+            this.balls2.vy += this.vgy + this.omega * (this.balls2.pos.y - this.y)
+
+            this.balls1.x += this.balls1.vx * dt;
+            this.balls1.y += this.balls1.vy * dt;
+            this.balls2.x += this.balls2.vx * dt;
+            this.balls2.y += this.balls2.vy * dt;
+
+            ctx.beginPath();
+            ctx.arc(this.balls1.pos.x, this.balls1.pos.y, this.balls1.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.balls1.color;
+            ctx.fill();
+            ctx.arc(this.balls2.pos.x, this.balls2.pos.y, this.balls2.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.balls1.color;
+            ctx.fill();
         }
 
-        ctx.fillStyle = "#0095DD";
-        ctx.font = "15px Arial";
-        ctx.fillText("運動量:" + (tscore[0]).toFixed(0), 10, 20);
-        ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
     }
 
 
@@ -155,21 +188,6 @@
         a.yforce += 0.001*((a.mass + b.mass)*(b.pos.y - a.pos.y))*(l-80)/(l);
     }
 
-    function constra(a, b){
-        let ablen = (((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2));
-        let norm = [(b.pos.x - a.pos.x)/ablen, (b.pos.y - a.pos.y)/ablen];
-        let mu = ((a.mass * b.mass) / (a.mass + b.mass));
-        let FX = a.xforce/a.mass - b.xforce/b.mass;
-        let FY = a.yforce/a.mass - b.yforce/b.mass;
-        let PX = a.pos.x - b.pos.x
-        let PY = a.pos.y - b.pos.y;
-        let fab = -(mu/100)*(((a.vx - b.vx)**2+ (a.vy - b.vy)**2) + (FX * PX + FY * PY));
-        a.xforce += -fab * norm[0];
-        a.yforce += -fab * norm[1];
-        b.xforce += fab * norm[0];
-        b.yforce += fab * norm[1];
-        
-    }
 
     function randomColor() {
         const rc1 = Math.random() * 16777215;
@@ -186,21 +204,7 @@
         ctx.stroke();
     }
 
-    function drawmonoconnect(a){
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(a.pos.x, a.pos.y);
-        ctx.lineWidth = 1 ;
-        ctx.stroke();
-    }
 
-    function targetPos() {
-        pos = {
-            x: 100,
-            y: 100
-        };
-        return pos;
-    }
 
     var balls = [];
 
@@ -208,6 +212,7 @@
     setInterval(
         function() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            rigids1.updateRigid();
             for(let index = 0; index < balls.length; index++){                
                 balls[index].updateBall(index);
                 balls[index].xforce = 0;
@@ -227,11 +232,11 @@
 
     var ipos1 = {
         x: 100,
-        y: 100,
+        y: 10,
     };
     var ipos2 = {
-        x: 200,
-        y: 10,
+        x: 10,
+        y: 100,
     };
     var ipos3 = {
         x: 320,
@@ -244,11 +249,18 @@
 
     balls.push(new Ball(ipos1));
     balls.push(new Ball(ipos2));
+    var rigids1 = new Rigid(balls[0], balls[1]);
+    
+
 //    balls.push(new Ball(ipos3));
 //    balls[0].radius = 15
 //    balls[1].radius = 20
 //    balls[2].radius = 35
     
+
+
+//---------- touch function----------------
+
 function onDown(e) {
         e.preventDefault();
         var offsetX = canvas.getBoundingClientRect().left;
@@ -271,8 +283,6 @@ function onDown(e) {
         }
 
     }
-
-
 
     function onMove(e) {
         e.preventDefault();
@@ -318,6 +328,7 @@ function onDown(e) {
         ctx.fillText("運動量:" + (tscore[0]).toFixed(0), 10, 20);
         ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
     }
+
 
     canvas.addEventListener('mousedown', onDown, false);
     canvas.addEventListener('mousemove', onMove, false);

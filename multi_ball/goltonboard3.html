@@ -34,7 +34,7 @@
         var ctx = canvas.getContext("2d");
         var pos = {
         x: 100,
-        y: 0,
+        y: 100,
         };
         var numberOfBalls = 0;
         var dt = 0.1;
@@ -45,88 +45,78 @@
     class Ball {
         constructor(pos) {
             this.pos = pos;
-            this.radius = 20;
+            this.radius = 5;
             this.color = randomColor();
-            this.vx = 0;
+            this.vx = 0.5*Math.random()-0.25;
             this.vy = 0;
             this.mass = this.radius ** 2;
-            this.changeradiusflag = false;
-            this.downflag = false;
             this.xforce = 0;
             this.yforce = 0;
+            this.fixflag = false;
+            this.fixflag2 = false;
         }
-
-
-        updateBall(index){
+        
+        updateBall(index) {
             this.index = index;
-            if(this.changeradiusflag) {
-                balls[index].radius += 0.1;
-                balls[index].radius %= 80;
-            }
             this.mass = this.radius ** 2;
-            this.yforce += 300;
-            constra(balls[0], balls[1]);
+            this.yforce += 50;
             this.vx += this.xforce * dt / this.mass;
             this.vy += this.yforce * dt / this.mass;
-            
 
-            for (let i = 0; i < balls.length; i++){
-                if(index < i){
-                    collision(this, balls[i]);
+                for (let i = 0; i < balls.length; i++){
+
+                        collision(balls[index], balls[i]);
+
+
+//                    if(index != i){
+//                        gravitation(balls[index] , balls[i]);
+//                    }
+                    
+//                    drawconnect(balls[index], balls[i]);
+
                 };
-                /*
-                if(index != i){
-                    gravitation(balls[index] , balls[i]);
-                }
-                */
-                
-                drawconnect(balls[index], balls[i]);
-            };
-            
+
             if((this.pos.x + this.vx * dt < this.radius) && (this.vx < 0))
             {
-                this.vx = -this.vx;
+                this.vx = -1.0001*this.vx;
             }
             if((this.pos.x + this.vx * dt > canvas.width - this.radius) && (this.vx > 0))
             {
-                this.vx = -this.vx;
+                this.vx = -1.0001*this.vx;
             }
             if((this.pos.y + this.vy * dt < this.radius) && (this.vy < 0))
             {
-                this.vy = -this.vy;
+                this.vy = -1.0001*this.vy;
             }
             if((this.pos.y + this.vy * dt > canvas.height - this.radius) && (this.vy > 0))
             {
-                this.vy = -this.vy;
+                this.vy = 0*this.vy;
+                this.vx = 0;
             }
-            if(!this.downflag){
+            if(!this.fixflag){
                 this.pos.x += this.vx * dt;
                 this.pos.y += this.vy * dt;
             }
+            
+            if((this.vx == 0 || this.vy == 0) && (!this.fixflag)){
+                this.fixflag2 = true;
+            }
+
             ctx.beginPath();
             ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
             ctx.fillStyle = this.color;
             ctx.fill();
+            if(this.fixflag){
+                this.vx = 0;
+                this.vy = 0;
+            }
         }
-    }
-
-    function totalscore(){
-        let tscore = [0, 0];
-        for (let i = 0; i < ballnum; i++){
-            tscore[0] += balls[i].mass * (balls[i].vx + balls[i].vy);
-            tscore[1] += balls[i].mass * (balls[i].vx**2 + balls[i].vy**2);
-        }
-
-        ctx.fillStyle = "#0095DD";
-        ctx.font = "15px Arial";
-        ctx.fillText("運動量:" + (tscore[0]).toFixed(0), 10, 20);
-        ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
     }
 
 
     function collision(a, b) {
         if(!(b.downflag)){
-            if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + a.vx) - (b.pos.x + b.vx))**2 + ((a.pos.y + a.vy) - (b.pos.y + b.vy))**2) > 0){
+            if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + 0.01*a.vx) - (b.pos.x + 0.01*b.vx))**2 + ((a.pos.y + 0.01*a.vy) - (b.pos.y + 0.01*b.vy))**2) > 0){
                 if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2)-(a.radius + b.radius)<0){
                     let a_mass = a.radius**2
                     let b_mass = b.radius**2
@@ -142,33 +132,22 @@
                     
                     a.vx = a.vx - a_save * norm[0] + a_after * norm[0]; 
                     a.vy = a.vy - a_save * norm[1] + a_after * norm[1]; 
-                    b.vx = b.vx - b_save * norm[0] + b_after * norm[0]; 
-                    b.vy = b.vy - b_save * norm[1] + b_after * norm[1];      
+                    b.vx = 0*(b.vx - b_save * norm[0] + b_after * norm[0]); 
+                    b.vy = 0*(b.vy - b_save * norm[1] + b_after * norm[1]);
+
+                    if(a.fixflag2){
+                        b.fixflag2 = true;
+                    }
                 }
             }
         }
     }
 
+
     function gravitation(a, b){
         var l = ((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2);
         a.xforce += 0.001*((a.mass + b.mass)*(b.pos.x - a.pos.x))*(l-80)/(l);
         a.yforce += 0.001*((a.mass + b.mass)*(b.pos.y - a.pos.y))*(l-80)/(l);
-    }
-
-    function constra(a, b){
-        let ablen = (((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2)**(1/2));
-        let norm = [(b.pos.x - a.pos.x)/ablen, (b.pos.y - a.pos.y)/ablen];
-        let mu = ((a.mass * b.mass) / (a.mass + b.mass));
-        let FX = a.xforce/a.mass - b.xforce/b.mass;
-        let FY = a.yforce/a.mass - b.yforce/b.mass;
-        let PX = a.pos.x - b.pos.x
-        let PY = a.pos.y - b.pos.y;
-        let fab = -(mu/100)*(((a.vx - b.vx)**2+ (a.vy - b.vy)**2) + (FX * PX + FY * PY));
-        a.xforce += -fab * norm[0];
-        a.yforce += -fab * norm[1];
-        b.xforce += fab * norm[0];
-        b.yforce += fab * norm[1];
-        
     }
 
     function randomColor() {
@@ -186,23 +165,18 @@
         ctx.stroke();
     }
 
-    function drawmonoconnect(a){
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(a.pos.x, a.pos.y);
-        ctx.lineWidth = 1 ;
-        ctx.stroke();
-    }
-
     function targetPos() {
         pos = {
-            x: 100,
+            x: 170,
             y: 100
         };
         return pos;
     }
 
     var balls = [];
+
+
+
 
 
     setInterval(
@@ -226,30 +200,45 @@
     var move = false;
 
     var ipos1 = {
-        x: 100,
-        y: 100,
+        x: 200,
+        y: 300,
     };
     var ipos2 = {
-        x: 200,
-        y: 10,
+        x: 120,
+        y: 350,
     };
     var ipos3 = {
         x: 320,
         y: 350,
     };
 
-    var dragging1 = false;
-    var dragging2 = false;
-    var dragging3 = false;
+    for(let i = 0; i < 7; i++){
+        for(let j = 0; j < i; j++){
+            let pos = {
+                x: 177.5 - 17.5 * i + 35 * j,
+                y: 160 + 31 * i,
+            }
+            balls.push(new Ball(pos))
+            balls[i*(i-1)/2 + j].fixflag = true;
+            balls[i*(i-1)/2 + j].radius = 6;
+        }
+    }
 
-    balls.push(new Ball(ipos1));
-    balls.push(new Ball(ipos2));
-//    balls.push(new Ball(ipos3));
-//    balls[0].radius = 15
-//    balls[1].radius = 20
-//    balls[2].radius = 35
+    setInterval(
+        function(){
+        var pos = {
+            x: 160,
+            y: 10,
+        };
+
+        balls.push(new Ball(pos)),1
+        }
+    ,1000);
+
+
+
     
-function onDown(e) {
+    function onDown(e) {
         e.preventDefault();
         var offsetX = canvas.getBoundingClientRect().left;
         var offsetY = canvas.getBoundingClientRect().top;
@@ -260,16 +249,6 @@ function onDown(e) {
             tx = e.touches[0].clientX - offsetX;
             ty = e.touches[0].clientY - offsetY;  
         }
-        if((balls[0].pos.x - tx)**2 + (balls[0].pos.y - ty)**2 < balls[0].radius ** 2){
-            balls[0].downflag = true;
-        }
-        if((balls[1].pos.x - tx)**2 + (balls[1].pos.y - ty)**2 < balls[1].radius ** 2){
-            balls[1].downflag = true;
-        }
-        if((balls[2].pos.x - tx)**2 + (balls[2].pos.y - ty)**2 < balls[2].radius ** 2){
-            balls[2].downflag = true;
-        }
-
     }
 
 
@@ -285,38 +264,9 @@ function onDown(e) {
             tx2 = e.touches[0].clientX - offsetX2;
             ty2 = e.touches[0].clientY - offsetY2;  
         }
-        if(balls[0].downflag){
-            balls[0].pos.x = tx2;
-            balls[0].pos.y = ty2;
-        }
-        if(balls[1].downflag){
-            balls[1].pos.x = tx2;
-            balls[1].pos.y = ty2;
-        }
-        if(balls[2].downflag){
-            balls[2].pos.x = tx2;
-            balls[2].pos.y = ty2;
-        }
     }
     
     function onUp(e) {
-        balls[0].downflag = false;
-        balls[1].downflag = false;
-        balls[2].downflag = false;
-
-    }
-
-    function totalscore(){
-        let tscore = [0, 0];
-        for (let i = 0; i < balls.length; i++){
-            tscore[0] += balls[i].mass * (balls[i].vx + balls[i].vy);
-            tscore[1] += balls[i].mass * (balls[i].vx**2 + balls[i].vy**2);
-        }
-
-        ctx.fillStyle = "#0095DD";
-        ctx.font = "15px Arial";
-        ctx.fillText("運動量:" + (tscore[0]).toFixed(0), 10, 20);
-        ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
     }
 
     canvas.addEventListener('mousedown', onDown, false);

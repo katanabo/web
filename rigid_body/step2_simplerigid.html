@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="hot iphone" />
+        <meta property="og:image" content="https://2.bp.blogspot.com/-nm6b6DkLzgk/WzC95qlZwFI/AAAAAAABM84/VTT_0zPoQRwDtVGv7sXONTproI8bV-bxwCLcBGAs/s800/samui_man_hokkairo.png" />
+        <title>ball class</title>
+    </head>
+
+    <style>
+        canvas {background: #eee; display: block; margin: 20px auto;}
+        canvas{
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            touch-action: none;
+            z-index: -1;
+        }
+  </style>
+
+    <body>
+    <canvas id="mycanvas" width="320" height="590"></canvas>
+
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+        var dt = 0.001;
+
+
+    function mod(a,b){return(a*b<0)*b+a%b}
+
+    class Rigid {
+        constructor() {
+            this.x1 = 100;
+            this.y1 = 300;
+            this.x2 = 200;
+            this.y2 = 300;
+            this.vx1 = 0;
+            this.vy1 = 0;
+            this.vx2 = 0;
+            this.vy2 = 0;
+            this.radius1 = 15;
+            this.radius2 = 25;
+            this.color1 = "red"
+            this.color2 = "blue"
+            this.m1 = this.radius1 ** 2;
+            this.m2 = this.radius2 ** 2;
+            this.xg = (this.m1 * this.x1 + this.m2 * this.x2)/(this.m1 + this.m2);
+            this.yg = (this.m1 * this.y1 + this.m2 * this.y2)/(this.m1 + this.m2);
+            this.vgx = 0;
+            this.vgy = 0;
+            this.xforce = 0;
+            this.yforce = 0;
+            this.omega = 10;
+            this.l = 300;
+            this.l1 = (this.m2 * this.l) / (this.m1 + this.m2)
+            this.l2 = (this.m1 * this.l) / (this.m1 + this.m2)
+            this.inertia = this.m1 * this.l1 ** 2 + this.m2 * this.l2 ** 2
+        }
+        updateRigid(){
+            this.mass = this.m1 + this.m2;
+//            this.yforce = 100;
+            this.vgx += this.xforce * dt / this.mass;
+            this.vgy += this.yforce * dt / this.mass;
+//            this.omega += (this.yforce + this.l1)* dt / this.inertia;
+
+
+//            this.xg += this.vgx * dt;
+//            this.yg += this.vgy * dt;
+            this.vx1 += this.vgx - this.omega * (this.y1 - this.yg)
+            this.vy1 += this.vgy + this.omega * (this.x1 - this.xg)
+            this.vx2 += this.vgx - this.omega * (this.y2 - this.yg)
+            this.vy2 += this.vgy + this.omega * (this.x2 - this.xg)
+            this.x1 += this.vx1 * dt;
+            this.y1 += this.vy1 * dt;
+            this.x2 += this.vx2 * dt;
+            this.y2 += this.vy2 * dt;
+
+
+
+            ctx.beginPath();
+            ctx.arc(this.x1, this.y1, this.radius1, 0, 2 * Math.PI);
+            ctx.fillStyle = this.color1;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(this.x2, this.y2, this.radius2, 0, 2 * Math.PI);
+            ctx.fillStyle = this.color2;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(this.x1, this.y1);
+            ctx.lineTo(this.x2, this.y2);
+            ctx.lineWidth = 1 ;
+            ctx.stroke();
+        }
+
+    }
+
+    function randomColor() {
+        const rc1 = Math.random() * 16777215;
+        const rc2 = Math.floor(rc1);
+        const rc3 = rc2.toString(16);
+        return "#" + rc3;
+    }
+
+    function drawconnect(a, b){
+        ctx.beginPath();
+        ctx.moveTo(a.pos.x, a.pos.y);
+        ctx.lineTo(b.pos.x, b.pos.y);
+        ctx.lineWidth = 1 ;
+        ctx.stroke();
+    }
+
+    function score(){
+        ctx.fillStyle = "#0095DD";
+        ctx.font = "15px Arial";
+        let L = ((rigids1.x1 - rigids1.x2)**2+(rigids1.y1 - rigids1.y2)**2)**(1/2)
+        let a = (rigids1.x2 - rigids1.x1)*(rigids1.vx1) + (rigids1.y2 - rigids1.y1)*(rigids1.vy1)
+        let b = (rigids1.x2 - rigids1.x1)*(rigids1.vx2) + (rigids1.y2 - rigids1.y1)*(rigids1.vy2)
+        ctx.fillText(L, 10, 20);
+//        ctx.fillText("運動エネルギー:" + (tscore[1]).toFixed(0), 10, 40);
+    }
+
+
+    let rigids1 = new Rigid();
+    setInterval(
+        function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            rigids1.updateRigid();
+            score();
+            rigids1.vx1 = 0
+            rigids1.vy1 = 0
+            rigids1.vx2 = 0
+            rigids1.vy2 = 0
+    },1);
+
+
+    
+
+
+//---------- touch function----------------
+
+function onDown(e) {
+        e.preventDefault();
+        var offsetX = canvas.getBoundingClientRect().left;
+        var offsetY = canvas.getBoundingClientRect().top;
+        if(e.clientX){
+            tx = e.clientX - offsetX;
+            ty = e.clientY - offsetY;
+        }else{
+            tx = e.touches[0].clientX - offsetX;
+            ty = e.touches[0].clientY - offsetY;  
+        }
+
+
+    }
+
+    function onMove(e) {
+        e.preventDefault();
+        var offsetX2 = canvas.getBoundingClientRect().left;
+        var offsetY2 = canvas.getBoundingClientRect().top;
+        if(e.clientX){
+            tx2 = e.clientX - offsetX2;
+            ty2 = e.clientY - offsetY2;
+        }else{
+            tx2 = e.touches[0].clientX - offsetX2;
+            ty2 = e.touches[0].clientY - offsetY2;  
+        }
+        if(balls[0].downflag){
+            balls[0].pos.x = tx2;
+            balls[0].pos.y = ty2;
+        }
+        if(balls[1].downflag){
+            balls[1].pos.x = tx2;
+            balls[1].pos.y = ty2;
+        }
+        if(balls[2].downflag){
+            balls[2].pos.x = tx2;
+            balls[2].pos.y = ty2;
+        }
+    }
+    
+    function onUp(e) {
+        balls[0].downflag = false;
+        balls[1].downflag = false;
+        balls[2].downflag = false;
+
+    }
+
+
+    canvas.addEventListener('mousedown', onDown, false);
+    canvas.addEventListener('mousemove', onMove, false);
+    canvas.addEventListener('mouseup', onUp, false);
+
+    canvas.addEventListener('touchstart', onDown, false);
+    canvas.addEventListener('touchmove', onMove, false);
+    canvas.addEventListener('touchend', onUp, false);
+
+
+    </script>
+
+  </body>
+
+</html>

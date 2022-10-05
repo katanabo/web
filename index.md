@@ -6,6 +6,11 @@
 
 # katanabo works
  
+## 雑記
+[web開発](web.html)
+[日記(毎日更新)](diary.html)
+
+
 ## 作品
 [ブロック崩し](new_blockkuzushi.html)
 [スワイプのテスト](bane_01.html)
@@ -28,6 +33,4 @@
 [ゴルトンボード2(ちょっと改善)](multi_ball/goltonboard2.html)
 [いよいよ剛体シミュレーション](rigid_body/step4_fixgosa.html)
 
-## 日記
-[2022/10/06](2022/10/06.html)
 

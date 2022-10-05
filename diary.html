@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>diary.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<link rel="stylesheet" href="./github-markdown.css" type="text/css">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<h1 id="20221006">2022/10/06</h1>
+<p>webページをアップデート。<br>
+個人のホームページを作るのにかれこれ1年以上試行錯誤を繰り返していた。自分が求めるシステムの要件は</p>
+<ul>
+<li>なるべく外部のサービスに頼らず、自分でいじれる状態にすること</li>
+<li>Markdownで書けること</li>
+<li>コードブロックのカスタマイズができること</li>
+<li>無料であること</li>
+<li>記事の投稿が容易であること</li>
+</ul>
+<p>などであったが、これらを完全に満たすサービスはなかった。<br>
+覚えている限りの変遷は</p>
+<ol>
+<li>amebaブログ</li>
+<li>はてなブログ</li>
+<li>wordpress(いまだにドメイン料を払っている)</li>
+<li>blogger(LaTeXやコードブロックでのsyntaxhilightを使えるようにした)</li>
+<li>MDwiki(XserverやNextCloudに置いた)</li>
+<li>Gatsby + Netlify(こちらは現役)</li>
+</ol>
+<p>などである。どれも一長一短であった。<br>
+このホームページの構成については<a href="web.html">技術系のまとめページ</a>にのせた</p>
+
+</body>
+</html>

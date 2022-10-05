@@ -109,11 +109,12 @@ markdown PDFという拡張機能を導入してみる。要件としては</p>
 自動保存で生成するようにできる？</p>
 <h2 id="settingjson%E3%81%AE%E5%A4%89%E6%9B%B4">setting.jsonの変更</h2>
 <pre class="hljs"><code><div>{
-  <span class="hljs-attr">"markdown-pdf.type"</span>: [
-    <span class="hljs-string">"html"</span>
-  ],
-  <span class="hljs-attr">"markdown-pdf.convertOnSave"</span>: <span class="hljs-literal">true</span>
-}
+    <span class="hljs-attr">"markdown-pdf.type"</span>: [
+        <span class="hljs-string">"html"</span>
+    ],
+    <span class="hljs-attr">"markdown-pdf.convertOnSave"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"markdown-pdf.breaks"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"markdown-pdf.includeDefaultStyles"</span>: <span class="hljs-literal">false</span>,
 </div></code></pre>
 <p>を追加することですごく処理が多い気がするが、その場でhtmlが変更されている</p>
 <h2 id="20221006">2022/10/06</h2>

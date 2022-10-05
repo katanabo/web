@@ -21,11 +21,12 @@ markdown PDFという拡張機能を導入してみる。要件としては
 ## setting.jsonの変更
 ```json
 {
-  "markdown-pdf.type": [
-    "html"
-  ],
-  "markdown-pdf.convertOnSave": true
-}
+    "markdown-pdf.type": [
+        "html"
+    ],
+    "markdown-pdf.convertOnSave": true,
+    "markdown-pdf.breaks": true,
+    "markdown-pdf.includeDefaultStyles": false,
 ``` 
 を追加することですごく処理が多い気がするが、その場でhtmlが変更されている
 

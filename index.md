@@ -32,4 +32,5 @@
 [球を剛体棒につなげたい](07_furiko/step6_constraint.html)
 [ゴルトンボード2(ちょっと改善)](03_multi_ball/goltonboard2.html)
 [いよいよ剛体シミュレーション](08_rigid_body/step4_fixgosa.html)
+[剛体2](08_rigid_body/step5_rigid-move.html)
 

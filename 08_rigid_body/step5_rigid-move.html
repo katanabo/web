@@ -95,8 +95,8 @@
             if(!this.downflag2){
                 this.yforce2 += this.m2 * 200;
             }
-            this.omega += ((this.x1 - this.xg)*(this.yforce1) - (this.y1 - this.yg)*(this.xforce1))* dt / this.inertia;
-            this.omega += ((this.x2 - this.xg)*(this.yforce2) - (this.y2 - this.yg)*(this.xforce2))* dt / this.inertia;
+            this.omega += 10*((this.x1 - this.xg)*(this.yforce1) - (this.y1 - this.yg)*(this.xforce1))* dt / this.inertia;
+            this.omega += 10*((this.x2 - this.xg)*(this.yforce2) - (this.y2 - this.yg)*(this.xforce2))* dt / this.inertia;
             this.xforce = this.xforce1 + this.xforce2
             this.yforce = this.yforce1 + this.yforce2
             
@@ -247,7 +247,7 @@
         if((rigids1.x1 - tx)**2 + (rigids1.y1 - ty)**2 < rigids1.radius1 ** 2){
             rigids1.downflag1 = true;
         }
-        if((rigids1.x2 - tx)**2 + (rigids1.y2 - ty)**2 < rigids1.radius2 ** 2){
+        if((rigids1.x2 - tx)**2 + (rigids1.y2 - ty)**2 < rigids1.radius2 ** 2 ){
             rigids1.downflag2 = true;
         }
 

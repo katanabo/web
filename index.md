@@ -8,7 +8,8 @@
  
 ## 雑記
 [web開発](web.html)
-[日記(毎日更新)](diary.html)
+[日記](diary.html)
+[今後追加したい機能](futureplan.html)
 
 
 ## 作品

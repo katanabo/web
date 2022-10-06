@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>futureplan.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<link rel="stylesheet" href="./github-markdown.css" type="text/css">
+<link rel="stylesheet" href="toc.css">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<h1 id="katanabo-works"><a href="./index.html">katanabo works</a></h1>
+<h1 id="%E4%BB%8A%E5%BE%8C%E8%BF%BD%E5%8A%A0%E3%81%97%E3%81%9F%E3%81%84%E6%A9%9F%E8%83%BD">今後追加したい機能</h1>
+<div id="ToC"></div>
+<h2 id="%E3%82%B9%E3%83%9E%E3%83%9B%E3%81%8B%E3%82%89%E3%81%A7%E3%82%82%E8%A8%98%E4%BA%8B%E3%81%AE%E6%9B%B4%E6%96%B0%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%AB20221006">スマホからでも記事の更新ができるように(2022/10/06)</h2>
+<p>現状パソコンからVScodeを開いて編集するしかないが、githubのリポジトリにpushするだけならスマホからでもできそう。</p>
+<h2 id="%E4%BD%9C%E5%93%81%E9%9B%86%E3%81%AE%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%82%AE%E3%83%A3%E3%83%A9%E3%83%AA%E3%83%BC%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E4%BD%9C%E3%82%8B20221006">作品集のアイコンを作ってギャラリーページを作る(2022/10/06</h2>
+<h2 id="%E4%BD%9C%E5%93%81%E3%81%AE%E8%A7%A3%E8%AA%AC%E8%A8%98%E4%BA%8B%E3%82%92%E6%9B%B8%E3%81%8F-20221006">作品の解説記事を書く (2022/10/06)</h2>
+<ul>
+<li>試行錯誤の過程を書きたい</li>
+<li>静的サイトジェネレーターよりも簡易的に作ることができ、使う技術も基本的なものだけ</li>
+<li>正直Reactから勉強するより圧倒的に楽</li>
+</ul>
+<h2 id="web%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%A8%E3%81%97%E3%81%A6%E3%81%AE%E4%BD%93%E8%A3%81%E3%82%92%E6%95%B4%E3%81%88%E3%82%8B-20221006">webページとしての体裁を整える (2022/10/06)</h2>
+<ul>
+<li>現状、github markdownのスタイルを使っていて、必要最低限の機能しか入れていない</li>
+<li>ファビコン作成</li>
+<li>OGPの作成</li>
+<li>全体的なデザインの変更</li>
+</ul>
+<h2 id="%E6%9B%B4%E6%96%B0%E6%83%85%E5%A0%B1%E3%82%92%E8%87%AA%E5%8B%95%E3%81%A7%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90-20221006">更新情報を自動で追加するスクリプトの作成 (2022/10/06)</h2>
+<ul>
+<li>後々は自動化したい</li>
+</ul>
+<script src="toc.js"></script>
+
+</body>
+</html>

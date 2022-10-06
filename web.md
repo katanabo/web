@@ -10,6 +10,10 @@
 # web開発
 <div id="ToC"></div>
 
+## (固定)軽微な修正
+- パソコン版のcssにmargin-rightを追加
+
+
 ## Table of Contentsの導入 (2022/10/06)
 自動でh2タグから目次を作成するスクリプトを入れた
 [参考](https://projectcodeed.blogspot.com/2020/04/an-automatic-table-of-contents.html)

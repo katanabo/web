@@ -7,8 +7,8 @@
 # katanabo works
  
 ## 雑記
-[web開発](web.html)
 [日記](diary.html)
+[web開発](web.html)
 [今後追加したい機能](futureplan.html)
 
 

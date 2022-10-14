@@ -34,4 +34,5 @@
 [ゴルトンボード2(ちょっと改善)](03_multiball/goltonboard2.html)
 [いよいよ剛体シミュレーション](08_rigid_body/step4_fixgosa.html)
 [剛体2](08_rigid_body/step5_rigid-move.html)
+[ギャラ記録くん1号](09_localstorage/index.html)
 

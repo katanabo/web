@@ -3,15 +3,31 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
+<div class="contents wrapper">
+<article>
+
 
 
 
 # [katanabo works](./index.html)
 # web開発
-<div id="ToC"></div>
+
 
 ## (固定)軽微な修正
 - パソコン版のcssにmargin-rightを追加
+
+## 目次の改良(2022/10/15)
+```css
+  position: sticky;
+  top: 0
+```
+などを用いて目次を左側に固定した。スクロールに追従する。
+### 詰まった点
+srickyが効かなかったのは
+>高さを確保した要素そのものにposition: sticky;をかけている
+https://note.spiqa.design/position-sticky-error/　より
+
+であった。
 
 
 ## Table of Contentsの導入 (2022/10/06)
@@ -75,4 +91,7 @@ mdファイル内に直接
 ```
 を書き込むという荒技で解決した
 
+</article>
+<aside id="ToC"></aside>
 <script src="toc.js"></script>
+</div>

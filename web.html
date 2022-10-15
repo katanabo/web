@@ -96,13 +96,26 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
+<div class="contents wrapper">
+<article>
 <h1 id="katanabo-works"><a href="./index.html">katanabo works</a></h1>
 <h1 id="web%E9%96%8B%E7%99%BA">web開発</h1>
-<div id="ToC"></div>
 <h2 id="%E5%9B%BA%E5%AE%9A%E8%BB%BD%E5%BE%AE%E3%81%AA%E4%BF%AE%E6%AD%A3">(固定)軽微な修正</h2>
 <ul>
 <li>パソコン版のcssにmargin-rightを追加</li>
 </ul>
+<h2 id="%E7%9B%AE%E6%AC%A1%E3%81%AE%E6%94%B9%E8%89%AF20221015">目次の改良(2022/10/15)</h2>
+<pre class="hljs"><code><div>  <span class="hljs-selector-tag">position</span>: <span class="hljs-selector-tag">sticky</span>;
+  <span class="hljs-selector-tag">top</span>: 0
+</div></code></pre>
+<p>などを用いて目次を左側に固定した。スクロールに追従する。</p>
+<h3 id="%E8%A9%B0%E3%81%BE%E3%81%A3%E3%81%9F%E7%82%B9">詰まった点</h3>
+<p>srickyが効かなかったのは</p>
+<blockquote>
+<p>高さを確保した要素そのものにposition: sticky;をかけている<br>
+https://note.spiqa.design/position-sticky-error/　より</p>
+</blockquote>
+<p>であった。</p>
 <h2 id="table-of-contents%E3%81%AE%E5%B0%8E%E5%85%A5-20221006">Table of Contentsの導入 (2022/10/06)</h2>
 <p>自動でh2タグから目次を作成するスクリプトを入れた<br>
 <a href="https://projectcodeed.blogspot.com/2020/04/an-automatic-table-of-contents.html">参考</a><br>
@@ -156,6 +169,9 @@ markdown PDFという拡張機能を導入してみる。要件としては</p>
 <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
 </div></code></pre>
 <p>を書き込むという荒技で解決した</p>
+</article>
+<aside id="ToC"></aside>
 <script src="toc.js"></script>
+</div>
 </body>
 </html>

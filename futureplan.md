@@ -3,11 +3,13 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
+<div class="contents wrapper">
+<article>
+
 
 
 # [katanabo works](./index.html)
 # 今後追加したい機能
-<div id="ToC"></div>
 
 ## iPhone用で、擬似的にアプリみたいになるcssを導入する
 2022/10/15追記
@@ -40,4 +42,7 @@
 ## 満を辞して二重振り子
 - by 友人M
 
+</article>
+<aside id="ToC"></aside>
 <script src="toc.js"></script>
+</div>

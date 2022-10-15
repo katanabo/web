@@ -3,11 +3,12 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
+<div class="contents wrapper">
+<article>
 
 
 # [katanabo works](./index.html)
 # 日記
-<div id="ToC"></div>
 
 ## 2022/10/15
 マイクスタンドを注文した。机の端に取り付けて、自由に動かせるタイプなので、より手軽に録音ができるのではないかと踏んでいる。
@@ -20,7 +21,6 @@
 これは、ある種"インスタのストーリー"ではなくもっと大きな"24時間で消える投稿形態"というものが市民権を得たということだろう。
 
 11月のライブが徐々に進み始めている。準備も忙しくなりそうだ。
-
 
 ## 2022/10/14 
 朝から白石へイベントのお手伝い。6:30-13:30で働いた。
@@ -135,5 +135,7 @@ we bページをアップデート。
 
 などである。どれも一長一短であった。
 このホームページの構成については[技術系のまとめページ](web.html)にのせた
-
+</article>
+<aside id="ToC"></aside>
 <script src="toc.js"></script>
+</div>

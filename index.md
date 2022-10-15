@@ -3,6 +3,8 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
+<div class="contents wrapper">
+<article>
 
 # katanabo works
  
@@ -35,4 +37,6 @@
 [いよいよ剛体シミュレーション](08_rigid_body/step4_fixgosa.html)
 [剛体2](08_rigid_body/step5_rigid-move.html)
 [ギャラ記録くん1号](09_localstorage/index.html)
-
+</article>
+<aside id="ToC"></aside>
+</div>

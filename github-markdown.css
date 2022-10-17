@@ -2,7 +2,6 @@
 .contents{
   display: flex;
   justify-content: space-between;
-  margin-bottom: 50px;
 }
 
 article {
@@ -12,7 +11,6 @@ article {
   margin-left: 30rem;
   margin-right: 0rem;
   color: #24292f;
-  background-color: #ffffff;
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
   font-size: 16px;
   line-height: 1.5;
@@ -27,7 +25,6 @@ aside {
   line-height: 1.5;
   font-family: Arial, Helvetica, sans-serif;
   color:Black;
-  background-color: white;
   top: 0;
   padding: 5px;
   margin: 30px;

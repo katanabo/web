@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>touch sample</title>
+  </head>
+
+  <style>
+    canvas {background: #eee; display: block; margin: 20px auto;}
+    canvas{
+      touch-action: none;
+    }
+  </style>
+
+  <body onload="init()">
+    <canvas id="mycanvas" width="320" height="320"></canvas>
+
+    <script>
+      
+    var canvas = document.getElementById( "mycanvas" );
+    var ctx = canvas.getContext("2d");
+
+    const Row = 320;
+    const Column = 320;
+    const Width = 1;
+    const Height = 1;
+
+    const dots = [];
+
+    for (let c = 0; c < Column; c++) {
+        dots[c] = [];
+        for (let r = 0; r < Row; r++) {
+            dots[c][r] = 0;
+        }
+    }
+
+ 
+    function drawDots() {
+        for (let c = 0; c < Column; c++) {
+            for (let r = 0; r < Row; r++) {
+                if(dots[c][r]){
+                    ctx.beginPath();
+                    ctx.rect(c, r, Width, Height);
+                    ctx.fillStyle = "#0095DD";
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
+    }
+
+    let count = 0;
+    setInterval(
+        function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawDots();
+        
+            for (let c = 0; c < Column; c++) {
+                for (let r = 0; r < Row; r++) {
+//                    if((Math.log(c))/(Math.log(r)) < ((Math.log(r))/(Math.log(c)))){
+                    if(c < r ** Math.sinh(0.1*count)){
+                        dots[c][r] = 1;
+//                        dots[c][r] = Math.floor(Math.random()*2);
+                    }
+                }
+            }
+            count++;
+
+        },100);
+
+      </script>
+
+
+  </body>
+
+</html>

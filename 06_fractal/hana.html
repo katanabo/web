@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>koch</title>
+  </head>
+
+  <style>
+    canvas {background: #eee; display: block; margin: 20px auto;}
+    canvas{
+        touch-action: none;
+             -webkit-touch-callout: none;
+             -webkit-user-select: none;
+             -khtml-user-select: none;
+             -moz-user-select: none;
+             -ms-user-select: none;
+             user-select: none;
+             outline: none;
+             -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+             touch-action: none;
+            z-index: -1;
+    }
+
+  </style>
+
+  <body onload="init()">
+    <canvas id="mycanvas" width="320" height="600"></canvas>
+
+    <script>
+      
+        let canvas = document.getElementById( "mycanvas" );
+        let ctx = canvas.getContext("2d");
+        let x0 = 160;
+        let y0 = 300;
+        let theta = 0;
+        let radius = 0;
+
+
+        function init() {
+
+        }
+        
+
+        setInterval(draw, 1);
+
+        function draw(){
+            let x = x0 + radius * Math.cos(theta)
+            let y = y0 + radius * Math.sin(theta)
+            ctx.beginPath();
+            ctx.arc(x, y, 1, 0, 2 * Math.PI);
+            ctx.fillStyle = "black"
+            ctx.fill();
+            theta += 1;
+            radius += 0.1*Math.sqrt(3);
+/*
+            x0 += 10*Math.sin(theta)
+            y0 += Math.sqrt(2)*Math.cos(theta)
+            radius += 10*Math.cos(theta)
+*/
+            
+        };
+
+
+        canvas.addEventListener('mousedown', onDown, false);
+        canvas.addEventListener('mouseup', onUp, false);
+        canvas.addEventListener('touchstart', onDown, false);
+        canvas.addEventListener('touchend', onUp, false);
+
+      </script>
+
+
+  </body>
+
+</html>

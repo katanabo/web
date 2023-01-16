@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <title>15 Game</title>
+  <style type="text/css">
+   td {font-size: 64; border: solid 1px black; text-align: center; width: 80px;}
+  </style>
+  <script type="text/javascript">
+   var sp = String.fromCharCode(160);
+   function f(x,y) {
+     var id = document.getElementById('v' + x + y);
+     if((y > 0) && (document.getElementById('v' + x + (y-1)).innerText < 1)) {
+       document.getElementById('v' + x + (y-1)).innerText = id.innerText;
+       id.innerText = sp;
+     } else if((y < 3) && (document.getElementById('v' + x + (y+1)).innerText < 1)) {
+       document.getElementById('v' + x + (y+1)).innerText = id.innerText;
+       id.innerText = sp;
+     } else if((x > 0) && (document.getElementById('v' + (x-1) + y).innerText < 1)) {
+       document.getElementById('v' + (x-1) + y).innerText = id.innerText;
+       id.innerText = sp;
+     } else if((x < 3) && (document.getElementById('v' + (x+1) + y).innerText < 1)) {
+       document.getElementById('v' + (x+1) + y).innerText = id.innerText;
+       id.innerText = sp;
+     }
+   }
+  </script>
+ </head>
+ <body>
+  <table>
+   <tr>
+    <td id="v00" onClick="f(0,0)"> 1</td>
+    <td id="v01" onClick="f(0,1)"> 5</td>
+    <td id="v02" onClick="f(0,2)"> 9</td>
+    <td id="v03" onClick="f(0,3)">13</td>
+   </tr>
+   <tr>
+    <td id="v10" onClick="f(1,0)"> 2</td>
+    <td id="v11" onClick="f(1,1)"> 6</td>
+    <td id="v12" onClick="f(1,2)">10</td>
+    <td id="v13" onClick="f(1,3)">14</td>
+   </tr>
+   <tr>
+    <td id="v20" onClick="f(2,0)"> 3</td>
+    <td id="v21" onClick="f(2,1)"> 7</td>
+    <td id="v22" onClick="f(2,2)">11</td>
+    <td id="v23" onClick="f(2,3)">15</td>
+   </tr>
+   <tr>
+    <td id="v30" onClick="f(3,0)"> 4</td>
+    <td id="v31" onClick="f(3,1)"> 8</td>
+    <td id="v32" onClick="f(3,2)">12</td>
+    <td id="v33" onClick="f(3,3)">&nbsp;</td>
+   </tr>
+  </table>
+ </body>
+</html>

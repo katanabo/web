@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>memo.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<link rel="stylesheet" href="./../github-markdown.css" type="text/css">
+<link rel="stylesheet" href="./../toc.css">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<div class="contents wrapper">
+<article>
+<h1 id="katanabo-works"><a href="../index.html">katanabo works</a></h1>
+<h1 id="1">1</h1>
+<h2 id="react%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">Reactについて</h2>
+<ul>
+<li>webサイトはアプリに近づいている</li>
+<li>HTML + CSS + JavaScriptではDOM操作にAPIが必要</li>
+<li>React はHTML &amp; CSSをJavascriptのオブジェクトにした</li>
+</ul>
+<h2 id="react%E3%81%A7%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E4%BD%9C%E3%82%8B%E5%9F%BA%E6%9C%AC">Reactでページを作る基本</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">const</span> element = _reactJsxRuntime.jsx(<span class="hljs-string">'h1'</span>, {
+    <span class="hljs-attr">children</span>: <span class="hljs-string">"Hello, react world!"</span>
+})
+
+ReactDOM.render(element, <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>))
+</div></code></pre>
+<p>これにより、ブラウザのDOMへ反映</p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span> = <span class="hljs-string">"root"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, react world!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span> 
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<h2 id="jsx%E3%81%A8%E3%81%AF">JSXとは</h2>
+<p>Reactの中でHTMLのように見えるものはAST(抽象構文木)化されたHTMLを基にしたReact要素<br>
+以下のように書き換えが可能</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">const</span> element = <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, React World!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+</div></code></pre>
+<p>しかしこの状態ではJavascriptのコードとして実行することはできないので、コンパイルし、JavaScriptのコードを生成しないといけない</p>
+<h2 id="%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">開発環境</h2>
+<p>Reactの環境を手軽に整えられるものがNext.js</p>
+<h2 id="nextjs-%E3%81%A8web%E3%82%B5%E3%82%A4%E3%83%88">Next.js とWebサイト</h2>
+<p>Vercelが開発するReactベースのフーレムワーク</p>
+<ul>
+<li>SSR: サーバーサイドレンダリング
+<ul>
+<li>メインだった</li>
+</ul>
+</li>
+<li>SG: 静的生成
+<ul>
+<li>途中から追加</li>
+</ul>
+</li>
+<li>SSG : 静的サイトジェネレーター
+<ul>
+<li>SSGも可能だが、機能が制限される</li>
+</ul>
+</li>
+</ul>
+<h2 id="nextjs-clicommand-line-interface">Next.js CLI(command line interface)</h2>
+<pre class="hljs"><code><div>npm run dev
+</div></code></pre>
+<p>or</p>
+<pre class="hljs"><code><div>npx next dev
+</div></code></pre>
+<p>によって、pacckage.jsonに登録されているものを実行できる</p>
+<p>npxはローカルにインストールされているJavaScriptのパッケージを実行するためのもの<br>
+存在しないものは一時的にダウンロードし、実行後に削除される</p>
+<p>npmはパッケージの管理システム<br>
+上記ではnpm scriptsを使ってpackage.jsonのscriptプロパティに 設定されているコマンドを実行する</p>
+<h2 id="import--export">import / export</h2>
+<p>export</p>
+<ul>
+<li>名前付きエクスポート
+<ul>
+<li>1モジュールに複数設定可能</li>
+</ul>
+</li>
+<li>デフォルトエクスポート
+<ul>
+<li>1モジュールに1つ</li>
+</ul>
+</li>
+</ul>
+<p>import</p>
+<ul>
+<li>名前付きインポート
+<ul>
+<li>指定したモジュールから名前を指定してインポート</li>
+</ul>
+</li>
+<li>デフォルトインポート
+<ul>
+<li>名前は任意</li>
+</ul>
+</li>
+</ul>
+<h2 id="jsx%E3%81%AE%E6%96%87%E6%B3%95">JSXの文法</h2>
+<ul>
+<li>JSXでは最上位の要素は1つである必要がある</li>
+<li>要素は必ず閉じる
+<ul>
+<li>imgなども</li>
+</ul>
+</li>
+<li>classNameと書く</li>
+</ul>
+<pre class="hljs"><code><div>  &lt;div className=<span class="hljs-string">'hero'</span>&gt;
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">color:</span> '<span class="hljs-attr">red</span>', <span class="hljs-attr">fontsize:</span> '<span class="hljs-attr">80px</span>'}}&gt;</span>
+      CUBE
+    <span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>JSXでは最上位の要素は1つ出なければいけない<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{subtitle}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+  &lt;<span class="hljs-regexp">/div&gt;
+</span></div></code></pre>
+<p>divを無駄に増やさないためにReact.Fracmentの＜＞で囲む</p>
+<h1 id="2">2</h1>
+<h2 id="%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">コンポーネントについて</h2>
+<p>コンポーネントによって、JSXを分割して再利用可能となる部品のように扱うことができる</p>
+</article>
+<aside id="ToC"></aside>
+<script src="./../toc.js"></script>
+</div>
+</body>
+</html>

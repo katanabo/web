@@ -12,6 +12,13 @@
 [日記](diary.html)
 [web開発](web.html)
 [今後追加したい機能](futureplan.html)
+<!-- 
+複数行は
+こっちのほうが
+断然、楽
+[レビュー](r_01_movie/review.html)
+-->
+
 
 
 ## 作品

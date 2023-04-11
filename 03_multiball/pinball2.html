@@ -118,6 +118,7 @@
         return 0;
     }
 
+    var collisioncount = 0;
     function collision(a, b) {
         if(!(b.downflag)){
             if(((a.pos.x - b.pos.x)**2 + (a.pos.y - b.pos.y)**2) - (((a.pos.x + dt * a.vx) - (b.pos.x + dt * b.vx))**2 + ((a.pos.y + dt * a.vy) - (b.pos.y + dt * b.vy))**2) > 0){
@@ -138,6 +139,7 @@
                     a.vy = a.vy - a_save * norm[1] + a_after * norm[1]; 
                     b.vx = b.vx - b_save * norm[0] + b_after * norm[0]; 
                     b.vy = b.vy - b_save * norm[1] + b_after * norm[1];      
+                    collisioncount++;
                 }
             }
         }
@@ -171,6 +173,10 @@
                 for (let i = 0; i < balls.length; i++){
                     if(index < i){
                         collision(balls[index], balls[i]);
+                        ctx.fillStyle = "#0095DD";
+                        ctx.font = "20px Arial";
+                        ctx.fillText("衝突回数:" + collisioncount, 100, 30);
+
                     };
                 };
                 balls[index].updateBall();

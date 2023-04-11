@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="./github-markdown.css" type="text/css">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>katanabo/web</title>
 </head>
 <div class="contents">
 <div>
@@ -11,16 +12,15 @@
 # katanabo works
  
 ## 雑記
+<!-- 
 [日記](diary.html)
 [web開発](web.html)
 [今後追加したい機能](futureplan.html)
-<!-- 
 複数行は
 こっちのほうが
 断然、楽
 [レビュー](r_01_movie/review.html)
 -->
-
 
 
 ## 作品

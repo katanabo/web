@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sample</title>
+  </head>
+
+  <style>
+    div {
+        text-align: center;
+    }
+    textarea {
+        width:20%;
+        height:100px;
+    }
+  </style>
+
+  <body>
+    <script src="./TtsQuestV3Voicevox.js"></script>
+    <script>
+        function play() {
+            var speakerId = 1; // VOICEVOX:ずんだもん（あまあま）
+            var text = document.getElementById('text').value;
+            var ttsQuestApiKey = 'c_f_89q-c7T-78F' // optional
+            var audio = new TtsQuestV3Voicevox(speakerId, text, ttsQuestApiKey);
+            audio.play();
+        }
+    </script>
+    <div>
+        <textarea id="text"></textarea>
+        <button onClick="play()">play</button>
+        VOICEVOX:ずんだもん
+    </div>
+  </body>
+
+</html>

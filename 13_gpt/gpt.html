@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPTチャットアプリ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+body {
+  font-family: Arial, sans-serif;
+}
+
+#chat-container {
+  max-width: 500px;
+  margin: 50px auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#chat-log {
+  height: 300px;
+  overflow-y: scroll;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.user-message .message-bubble {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.chatGPT-message .message-bubble {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.message-bubble {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+}
+
+.user-bubble {
+  margin-right: auto;
+}
+
+.chatGPT-bubble {
+  margin-left: auto;
+}
+
+#user-input {
+  display: flex;
+  margin-top: 10px;
+}
+
+#user-text {
+  flex: 1;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+#send-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#send-button:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 500px) {
+  #chat-container {
+    margin: 20px;
+  }
+  
+  #chat-log {
+    height: 200px;
+  }
+}
+
+  </style>
+
+</head>
+
+<body>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <div id="user-input">
+          <input type="text" id="user-text" placeholder="質問を入力してください...">
+          <button id="send-button">送信</button>
+        </div>
+      </div>
+    
+  <script>
+// 静的な応答パターン
+const responses = [
+  "それについてはどうでしょうか？",
+  "ごめんなさい、私にはわかりません。",
+  "興味深いですね。",
+  "もっと詳しく教えていただけますか？",
+  "それに関しては他の人に尋ねてみてください。",
+];
+
+// チャットログにメッセージを追加するヘルパー関数
+function addMessageToLog(sender, message) {
+  const chatLog = document.getElementById('chat-log');
+  const messageElement = document.createElement('div');
+  messageElement.innerHTML = `<strong>${sender}: </strong>${message}`;
+  chatLog.appendChild(messageElement);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+// ユーザーの入力を処理し、応答を生成する関数
+function processUserInput() {
+  const userInput = document.getElementById('user-text');
+  const userMessage = userInput.value;
+
+  addMessageToLog('ユーザー', userMessage);
+
+  // ランダムな応答を選択
+  const randomIndex = Math.floor(Math.random() * responses.length);
+  const randomResponse = responses[randomIndex];
+  
+  addMessageToLog('ChatGPT', randomResponse);
+
+  userInput.value = '';
+}
+
+// 送信ボタンのクリックイベントを処理
+const sendButton = document.getElementById('send-button');
+sendButton.addEventListener('click', processUserInput);
+
+// ユーザーの入力欄でEnterキーを処理
+const userInput = document.getElementById('user-text');
+userInput.addEventListener('keyup', function(event){
+  if (event.keyCode === 13) { // Enterキーのキーコードは13
+    processUserInput();
+  }
+});
+
+</script>
+</body>
+</html>

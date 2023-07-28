@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>シンプルな音声再生</title>
+</head>
+<body>
+  <button id="play-button">再生</button>
+
+  <script>
+    // 音声ファイルのURL
+    const audioURL = './kanpai.mp3';
+
+    // ボタン要素を取得
+    const playButton = document.getElementById('play-button');
+
+    // ボタンがクリックされた時の処理を設定
+    playButton.addEventListener('click', () => {
+      // Audioオブジェクトを作成
+      const audio = new Audio(audioURL);
+
+      // 音声を再生
+      audio.play();
+    });
+  </script>
+</body>
+</html>

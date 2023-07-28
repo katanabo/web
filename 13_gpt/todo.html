@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ToDoアプリ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .todo-container {
+      margin-bottom: 10px;
+      display: flex;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #fff;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      display: flex;
+    }
+
+    li button {
+      margin-left: auto;
+      background-color: #f44336;
+    }
+
+    li.completed {
+      background-color: #808080;
+      color: #fff;
+      text-decoration: line-through;
+    }
+
+    .task-markdown {
+      margin-top: 10px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <h1>ToDoアプリ</h1>
+  
+  <div class="todo-container">
+    <input type="text" id="taskInput" placeholder="タスクを入力してください" onkeypress="handleKeyPress(event)">
+    <button onclick="addTask()">追加</button>
+  </div>
+  
+  <ul id="taskList">
+  </ul>
+
+  <div id="taskMarkdown" class="task-markdown"></div>
+
+  <script>
+    // タスクを追加する関数
+    function addTask() {
+      var taskInput = document.getElementById("taskInput");
+      var taskList = document.getElementById("taskList");
+
+      if (taskInput.value === "") {
+        alert("タスクを入力してください");
+        return;
+      }
+
+      var newTask = document.createElement("li");
+      newTask.textContent = taskInput.value;
+      newTask.addEventListener("click", function() {
+        toggleComplete(newTask);
+      });
+
+      var deleteButton = document.createElement("button");
+      deleteButton.textContent = "削除";
+      deleteButton.addEventListener("click", function(event) {
+        event.stopPropagation();
+        taskList.removeChild(newTask);
+        updateTaskMarkdown();
+      });
+
+      newTask.appendChild(deleteButton);
+      taskList.appendChild(newTask);
+
+      taskInput.value = ""; // 入力欄をクリア
+      updateTaskMarkdown();
+    }
+
+    // キープレスイベントのハンドリング
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        addTask();
+      }
+    }
+
+    // タスクの完了状態を切り替える関数
+    function toggleComplete(task) {
+      task.classList.toggle("completed");
+      updateTaskMarkdown();
+    }
+
+    // タスクのMarkdownを更新する関数
+    function updateTaskMarkdown() {
+      var taskList = document.getElementById("taskList");
+      var taskMarkdown = document.getElementById("taskMarkdown");
+
+      var markdownText = "";
+      for (var i = 0; i < taskList.children.length; i++) {
+        var task = taskList.children[i];
+        var taskText = task.textContent.trim();
+        var taskStatus = task.classList.contains("completed") ? "✓" : "○";
+        markdownText += "- [" + taskStatus + "] " + taskText + "\n";
+      }
+
+      taskMarkdown.innerHTML = marked(markdownText);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatGPTチャットアプリ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    #chat-container {
+      max-width: 500px;
+      margin: 50px auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    #chat-log {
+      height: 600px;
+      overflow-y: scroll;
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+    }
+    
+    .message {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.user-message .message-bubble {
+  background-color: #f2f2f2;
+  color: #333;
+  margin-left: auto;
+}
+
+.chatGPT-message .message-bubble {
+  background-color: #007bff;
+  color: #fff;
+  margin-right: auto;
+}
+
+.message-bubble {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+}
+
+#user-input {
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+#user-text {
+  flex: 1;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+#send-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#send-button:hover {
+  background-color: #0056b3;
+}
+    
+    @media (max-width: 500px) {
+      #chat-container {
+        margin: 20px;
+      }
+      
+      #chat-log {
+        height: 400px;
+      }
+    }
+  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-log"></div>
+    <div id="user-input">
+      <input type="text" id="user-text" placeholder="質問を入力してください...">
+      <button id="send-button">送信</button>
+    </div>
+  </div>
+
+  <script>
+    const responses = [
+      "それについてはどうでしょうか？",
+      "ごめんなさい、私にはわかりません。",
+      "興味深いですね。",
+      "もっと詳しく教えていただけますか？",
+      "それに関しては他の人に尋ねてみてください。",
+    ];
+    
+    function addMessageToLog(sender, message, isUserMessage) {
+      const chatLog = document.getElementById('chat-log');
+      const messageContainer = document.createElement('div');
+      messageContainer.classList.add('message');
+      messageContainer.classList.add(isUserMessage ? 'user-message' : 'chatGPT-message');
+      
+      const messageBubble = document.createElement('div');
+      messageBubble.classList.add('message-bubble');
+      messageBubble.textContent = message;
+      
+      messageContainer.appendChild(messageBubble);
+      chatLog.appendChild(messageContainer);
+      
+      // チャットログを最下部にスクロール
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    
+    function processUserInput() {
+      const userInput = document.getElementById('user-text');
+      const userMessage = userInput.value.trim();
+      
+      if (userMessage === '') {
+        return;
+      }
+      
+      addMessageToLog('ユーザー', userMessage, true);
+      
+      // ユーザーの入力に対する応答をランダムに選択
+      const randomIndex = Math.floor(Math.random() * responses.length);
+      const chatGPTResponse = responses[randomIndex];
+      
+      setTimeout(() => {
+        addMessageToLog('ChatGPT', chatGPTResponse, false);
+      }, 500);
+      
+      userInput.value = '';
+    }
+    
+    const userInput = document.getElementById('user-text');
+    const sendButton = document.getElementById('send-button');
+    
+    userInput.addEventListener('keydown', (event) => {
+      if (event.keyCode === 13) { // Enterキーのキーコードは13
+        processUserInput();
+      }
+    });
+    
+    sendButton.addEventListener('click', processUserInput);
+// 画面の拡大縮小を禁止する
+document.documentElement.addEventListener('touchstart', function (event) {
+  if (event.touches.length > 1) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}, { passive: false });
+
+// ダブルタップによる拡大を禁止する
+var lastTouchEnd = 0;
+document.documentElement.addEventListener('touchend', function (event) {
+  var now = (new Date()).getTime();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  lastTouchEnd = now;
+}, false);
+  </script>
+</body>
+</html>

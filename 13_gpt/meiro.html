@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>迷路ゲーム</title>
+    <style>
+        #maze {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            width: 300px;
+            height: 300px;
+        }
+        
+        .cell {
+            border: 1px solid black;
+            background-color: white;
+        }
+        
+        .start {
+            background-color: green;
+        }
+        
+        .end {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="maze"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const maze = document.getElementById("maze");
+            const cells = [];
+            let startCell, endCell;
+            
+            // 迷路の作成
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    
+                    if (i === 0 && j === 0) {
+                        cell.classList.add("start");
+                        startCell = cell;
+                    } else if (i === 4 && j === 4) {
+                        cell.classList.add("end");
+                        endCell = cell;
+                    }
+                    
+                    cells.push(cell);
+                    maze.appendChild(cell);
+                }
+            }
+            
+            // タッチイベントの処理
+            let isDrawing = false;
+            
+            cells.forEach(cell => {
+                cell.addEventListener("touchstart", function() {
+                    isDrawing = true;
+                });
+                
+                cell.addEventListener("touchend", function() {
+                    isDrawing = false;
+                });
+                
+                cell.addEventListener("touchmove", function() {
+                    if (isDrawing) {
+                        this.style.backgroundColor = "black";
+                    }
+                });
+            });
+            
+            // ゴール判定
+            maze.addEventListener("touchmove", function(event) {
+                if (event.target === endCell && isDrawing) {
+                    alert("ゴールしました！");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

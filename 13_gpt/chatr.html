@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Data Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            display: block;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        // COVID-19 Data APIのエンドポイント
+        var apiEndpoint = "https://api.covid19api.com/summary";
+
+        // APIからデータを取得して可視化
+        fetch(apiEndpoint)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                var countries = data.Countries;
+                var labels = [];
+                var confirmedCases = [];
+
+                // 必要なデータを取得
+                for (var i = 0; i < countries.length; i++) {
+                    labels.push(countries[i].Country);
+                    confirmedCases.push(countries[i].TotalConfirmed);
+                }
+
+                // データの可視化
+                var ctx = document.getElementById("myChart").getContext("2d");
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Confirmed Cases',
+                            data: confirmedCases,
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'COVID-19 Confirmed Cases by Country'
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

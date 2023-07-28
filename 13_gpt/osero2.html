@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Othello Game</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            max-width: 90vw;
+            max-height: 90vw;
+            background-color: #007bff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .cell {
+            box-sizing: border-box;
+            width: calc(100% / 8);
+            height: calc(100% / 8);
+            border: 1px solid #000;
+            background-color: #0080ff;
+        }
+
+        .empty {
+            cursor: pointer;
+        }
+
+        .black {
+            background-color: #000;
+            border-radius: 50%;
+        }
+
+        .white {
+            background-color: #fff;
+            border-radius: 50%;
+        }
+
+        .break {
+            width: 100%;
+            height: 0;
+        }
+
+        #message {
+            margin-top: 20px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #restart-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="board"></div>
+        <div id="message">Player's Turn: <span id="current-player"></span></div>
+        <button id="restart-button">Restart</button>
+    </div>
+
+    <script>
+        const BOARD_SIZE = 8;
+        const EMPTY = 0;
+        const BLACK = 1;
+        const WHITE = 2;
+
+        let board = [];
+        let currentPlayer = BLACK;
+
+        const boardElement = document.getElementById("board");
+        const restartButton = document.getElementById("restart-button");
+
+        // 初期化
+        function initialize() {
+            board = Array.from(Array(BOARD_SIZE), () => new Array(BOARD_SIZE).fill(EMPTY));
+            board[3][3] = WHITE;
+            board[3][4] = BLACK;
+            board[4][3] = BLACK;
+            board[4][4] = WHITE;
+            currentPlayer = BLACK;
+            renderBoard();
+            renderMessage();
+        }
+
+        // ボードを描画
+        function renderBoard() {
+            boardElement.innerHTML = "";
+
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    const cell = document.createElement("div");
+                    cell.className = "cell";
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+
+                    if (
+                                        // セルのクリックイベントを追加
+                cell.addEventListener("click", handleCellClick);
+
+if (board[row][col] === BLACK) {
+    cell.classList.add("black");
+} else if (board[row][col] === WHITE) {
+    cell.classList.add("white");
+} else {
+    cell.classList.add("empty");
+}
+
+boardElement.appendChild(cell);
+}
+}
+}
+
+// メッセージを描画
+function renderMessage() {
+const messageElement = document.getElementById("message");
+messageElement.textContent = `Player's Turn: ${getCurrentPlayerColor()}`;
+}
+
+// クリックイベントの処理
+function handleCellClick(event) {
+const row = parseInt(event.target.dataset.row);
+const col = parseInt(event.target.dataset.col);
+
+if (isValidMove(row, col)) {
+placeStone(row, col);
+flipStones(row, col);
+if (hasValidMoves()) {
+switchPlayer();
+} else {
+switchPlayer();
+if (!hasValidMoves()) {
+    endGame();
+}
+}
+renderBoard();
+renderMessage();
+if (currentPlayer === WHITE) {
+setTimeout(computerMove, 500);
+}
+}
+}
+
+// 石を置く
+function placeStone(row, col) {
+board[row][col] = currentPlayer;
+}
+
+// 石をひっくり返す
+function flipStones(row, col) {
+const directions = [            { dx: -1, dy: -1 }, // 左上            { dx: 0, dy: -1 }, // 上            { dx: 1, dy: -1 }, // 右上            { dx: -1, dy: 0 }, // 左            { dx: 1, dy: 0 }, // 右            { dx: -1, dy: 1 }, // 左下            { dx: 0, dy: 1 }, // 下            { dx: 1, dy: 1 } // 右下        ];
+
+directions.forEach((direction) => {
+const stonesToFlip = getStonesToFlip(row, col, direction.dx, direction.dy);
+stonesToFlip.forEach((stone) => {
+const flipRow = stone.row;
+const flipCol = stone.col;
+board[flipRow][flipCol] = currentPlayer;
+});
+});
+}
+
+// ひっくり返す石の取得
+function getStonesToFlip(row, col, dx, dy) {
+const opponent = currentPlayer === BLACK ? WHITE : BLACK;
+const stonesToFlip = [];
+let x = row + dx;
+let y = col + dy;
+
+while (isValidPosition(x, y) && board[x][y] === opponent) {
+stonesToFlip.push({ row: x, col: y });
+x += dx;
+y += dy;
+}
+
+if (isValidPosition(x, y) && board[x][y] === currentPlayer) {
+return stonesToFlip;
+} else {
+return [];
+}
+}
+
+// 有効な手かどうかを判定
+function isValidMove(row, col) {
+return board[row][col] === EMPTY && canFlipStones(row, col);
+}
+
+// ひっくり返せる石があるかどうかを判定
+function canFlipStones(row, col
+) {
+const directions = [
+{ dx: -1, dy: -1 }, // 左上
+{ dx: 0, dy: -1 }, // 上
+{ dx: 1, dy: -1 }, // 右上
+{ dx: -1, dy: 0 }, // 左
+{ dx: 1, dy: 0 }, // 右
+{ dx: -1, dy: 1 }, // 左下
+{ dx: 0, dy: 1 }, // 下
+{ dx: 1, dy: 1 } // 右下
+];
+for (let i = 0; i < directions.length; i++) {
+            const direction = directions[i];
+            const dx = direction.dx;
+            const dy = direction.dy;
+
+            let x = row + dx;
+            let y = col + dy;
+            let foundOpponent = false;
+
+            while (isValidPosition(x, y) && board[x][y] !== EMPTY && board[x][y] !== currentPlayer) {
+                x += dx;
+                y += dy;
+                if (isValidPosition(x, y) && board[x][y] === currentPlayer) {
+                    foundOpponent = true;
+                    break;
+                }
+            }
+
+            if (foundOpponent) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // 有効な手があるかどうかを判定
+    function hasValidMoves() {
+        for (let row = 0; row < BOARD_SIZE; row++) {
+            for (let col = 0; col < BOARD_SIZE; col++) {
+                if (isValidMove(row, col)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // ゲーム終了
+    function endGame() {
+        const blackCount = getStoneCount(BLACK);
+        const whiteCount = getStoneCount(WHITE);
+
+        let message = "Game Over! ";
+
+        if (blackCount > whiteCount) {
+            message += "Black wins!";
+        } else if (blackCount < whiteCount) {
+            message += "White wins!";
+        } else {
+            message += "It's a draw!";
+        }
+
+        document.getElementById("message").textContent = message;
+        disableClicks();
+    }
+
+    // クリックイベントの無効化
+    function disableClicks() {
+        const cells = document.querySelectorAll(".cell");
+        cells.forEach((cell) => {
+            cell.removeEventListener("click", handleCellClick);
+        });
+    }
+
+    // プレイヤーの切り替え
+    function switchPlayer() {
+        currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
+    }
+
+    // 有効な座標かどうかを判定
+    function isValidPosition(row, col) {
+        return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
+    }
+
+    // 石の数を取得
+    function getStoneCount(player) {
+        let count = 0;
+
+        for (let row = 0; row < BOARD_SIZE; row++) {
+            for (let col = 0; col < BOARD_SIZE; col++) {
+                if (board[row][col] === player) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    // コンピュータの手の決定
+    function computerMove() {
+        const validMoves = getValidMoves();
+        const randomIndex = Math.floor(Math.random()

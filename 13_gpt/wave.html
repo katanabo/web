@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>2D Wave Simulation</title>
+  <style>
+    #canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="400"></canvas>
+
+  <script>
+    // シミュレーションのパラメータ
+    const width = 600;       // キャンバスの幅
+    const height = 400;      // キャンバスの高さ
+    const dt = 0.1;          // タイムステップ
+    const dx = 4;            // x方向の空間刻み幅
+    const dy = 4;            // y方向の空間刻み幅
+    const c = 0.1;           // 波の速さ
+    const damping = 0.99;    // 減衰率
+
+    // シミュレーション領域のサイズを計算
+    const nx = Math.floor(width / dx);
+    const ny = Math.floor(height / dy);
+
+    // シミュレーションデータの初期化
+    let u = [];
+    let u_prev = [];
+    for (let i = 0; i < nx; i++) {
+      u[i] = [];
+      u_prev[i] = [];
+      for (let j = 0; j < ny; j++) {
+        u[i][j] = 0;
+        u_prev[i][j] = 0;
+      }
+    }
+
+    // 描画コンテキストの取得
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+
+    // シミュレーションの更新と描画のための関数
+    function update() {
+      // シミュレーションデータの更新
+      for (let i = 1; i < nx - 1; i++) {
+        for (let j = 1; j < ny - 1; j++) {
+          const laplacian = (u_prev[i - 1][j] + u_prev[i + 1][j] + u_prev[i][j - 1] + u_prev[i][j + 1] - 4 * u_prev[i][j]);
+          const acceleration = c * c * laplacian;
+          u[i][j] = (2 * u_prev[i][j] - u[i][j]) + acceleration * dt * dt;
+          u[i][j] *= damping;
+        }
+      }
+
+      // シミュレーションデータのスワップ
+      const temp = u_prev;
+      u_prev = u;
+      u = temp;
+
+      // シミュレーションデータの可視化
+      context.clearRect(0, 0, width, height);
+      context.fillStyle = 'black';
+      for (let i = 0; i < nx; i++) {
+        for (let j = 0; j < ny; j++) {
+            const value = u[i][j];
+            const color = `rgb(${value + 128}, ${value + 128}, ${value + 128})`;
+            context.fillStyle = color;
+            context.fillRect(i * dx, j * dy, dx, dy);
+        }
+    }
+
+      // 次のフレームの更新
+      requestAnimationFrame(update);
+    }
+
+// 初期条件の設定
+// ここでは、中央に円形の初期波形を生成します
+const centerX = Math.floor(nx / 2);
+const centerY = Math.floor(ny / 2);
+const radius = 10;
+for (let i = centerX - radius; i < centerX + radius; i++) {
+  for (let j = centerY - radius; j < centerY + radius; j++) {
+    if (Math.sqrt((i - centerX) ** 2 + (j - centerY) ** 2) <= radius) {
+      u[i][j] = 128;
+    }
+  }
+}
+
+// 初回の更新呼び出し
+update();
+</script>
+</body>
+</html>

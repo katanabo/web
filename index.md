@@ -11,8 +11,8 @@
 
 # katanabo works
  
-## 雑記
 <!-- 
+## 雑記
 [日記](diary.html)
 [web開発](web.html)
 [今後追加したい機能](futureplan.html)
@@ -46,6 +46,7 @@
 [いよいよ剛体シミュレーション](08_rigid_body/step4_fixgosa.html)
 [剛体2](08_rigid_body/step5_rigid-move.html)
 [ギャラ記録くん1号](09_localstorage/index.html)
+[AIチャット](14_voicechat/interface.html)
 </article>
 <aside id="ToC"></aside>
 </div>

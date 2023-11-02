@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatGPTチャットアプリ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 20px
+    }
+    
+    #chat-container {
+      width: 500px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    #chat-log {
+      height: 900px;
+      overflow-y: scroll;
+      border-bottom: 1px solid #ccc;
+
+    }
+    
+    .message {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.user-message .message-bubble {
+  background-color: #f2f2f2;
+  color: #333;
+  margin-left: auto;
+}
+
+.chatGPT-message .message-bubble {
+  background-color: #007bff;
+  color: #fff;
+  margin-right: auto;
+}
+
+.message-bubble {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+}
+
+#user-input {
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  font-size: 20px
+}
+
+#user-text {
+  flex: 1;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 20px
+}
+
+#send-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#send-button:hover {
+  background-color: #0056b3;
+}
+    
+    @media (max-width: 500px) {
+      #chat-container {
+        margin: 20px;
+      }
+      
+      #chat-log {
+        height:  400px;
+      }
+    }
+.wrapper{
+  display: flex;
+}
+
+
+  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+</head>
+<body>
+  <div class="wrapper">
+  <img id="zunda" src="ずん_む.gif">
+  <div id="chat-container">
+    <div id="chat-log"></div>
+    <div id="user-input">
+      <input type="text" id="user-text" placeholder="質問を入力してください...">
+      <button id="send-button" onclick="processUserInput()">送信</button>
+    </div>
+  </div>
+  </div>
+
+  <script src="./TtsQuestV3Voicevox.js"></script>
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+  
+  <script>
+    const API_KEY = '';
+    const URL = "https://api.openai.com/v1/chat/completions";
+
+
+
+
+    
+    function addMessageToLog(sender, message, isUserMessage) {
+      const chatLog = document.getElementById('chat-log');
+      const messageContainer = document.createElement('div');
+      messageContainer.classList.add('message');
+      messageContainer.classList.add(isUserMessage ? 'user-message' : 'chatGPT-message');
+      
+      const messageBubble = document.createElement('div');
+      messageBubble.classList.add('message-bubble');
+      messageBubble.textContent = message;
+      
+      messageContainer.appendChild(messageBubble);
+      chatLog.appendChild(messageContainer);
+      
+      // チャットログを最下部にスクロール
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function play(resp) {
+      var zun = document.getElementById("zunda");
+      var speakerId = 1; // VOICEVOX:ずんだもん（あまあま）
+      var ttsQuestApiKey = 'c_f_89q-c7T-78F' // optional
+      var audio = new TtsQuestV3Voicevox(speakerId, resp, ttsQuestApiKey);
+      audio.play();
+
+      audio.addEventListener("playing", (event) => {
+        zun.src = "ずん_お喋り.gif";
+      });
+      
+      audio.addEventListener("ended", (event) => {
+        zun.src = "ずん_む.gif";
+      });
+            /*
+            while(!audio.ended) {
+              zun.src = "ずん_お喋り.gif";
+              if(audio.ended){
+                break;
+              }
+            }
+            */
+    }
+
+    function gptrequest() {
+      var text = document.getElementById("user-text").value;
+      async function getResponse() {
+        try {
+            const response = await axios.post(
+                URL,
+                {
+                    "model": "gpt-3.5-turbo",
+                    "messages": [
+                        { "role": "system", "content": "あなたはジャズと音楽の専門家です。語尾は必ず「〜なのだ」か「〜のだ」になり、あなたの返答は必ず100文字以内に抑えます。" },
+                        { "role": "user", "content": text }
+                    ]
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${API_KEY}`,
+                    },
+                }
+            );
+            var chatGPTResponse = response.data.choices[0].message.content;
+            play(chatGPTResponse);
+            addMessageToLog('ChatGPT', chatGPTResponse, false);
+        } catch (error) {
+          console.log(error);
+        }
+//        addMessageToLog('ChatGPT', chatGPTResponse, false);
+      }
+    getResponse();
+  }
+  
+  function processUserInput() {
+    const userInput = document.getElementById('user-text');
+      const userMessage = userInput.value;
+      
+      if (userMessage === '') {
+        return;
+      }
+      
+      addMessageToLog('ユーザー', userMessage, true);
+      
+
+//      const randomIndex = Math.floor(Math.random() * responses.length);
+//      var chatGPTResponse = responses[randomIndex];
+      gptrequest();
+//      play(chatGPTResponse);
+
+//      setTimeout(() => {
+//        addMessageToLog('ChatGPT', chatGPTResponse, false);
+//        play(chatGPTResponse);
+//      }, 500);
+      
+      userInput.value = '';
+    }
+    
+    const userInput = document.getElementById('user-text');
+    const sendButton = document.getElementById('send-button');
+    
+    userInput.addEventListener('keydown', (event) => {
+      if (event.keyCode === 13) { // Enterキーのキーコードは13
+        processUserInput();
+      }
+    });
+    
+    sendButton.addEventListener('click', processUserInput());
+
+
+
+    // 画面の拡大縮小を禁止する
+    document.documentElement.addEventListener('touchstart', function (event) {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, { passive: false });
+
+    // ダブルタップによる拡大を禁止する
+    var lastTouchEnd = 0;
+    document.documentElement.addEventListener('touchend', function (event) {
+      var now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      lastTouchEnd = now;
+    }, false);
+  </script>
+</body>
+</html>

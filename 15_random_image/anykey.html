@@ -1,0 +1,29 @@
+<html>
+    <body>
+        <div style="text-align: center;">
+            <img id="mypic" onclick="slideshow()" src="img/00.gif" width="800" height="800">
+        </div>
+            <script>
+            var pics_src = new Array("img/01.png","img/02.png","img/03.png","img/04.png","img/05.png","img/06.png","img/07.png","img/08.png","img/09.png","img/10.png","img/11.png","img/12.png");
+            var gif_src = new Array("img/00.gif");
+            var num = 0;
+            var num2 = 0
+
+            function slideshow(){
+                if (num == 24) {
+                    num = 0;
+                }
+                else {
+                    num ++;
+                }
+                if(num % 2 == 0){
+                    document.getElementById("mypic").src=gif_src[0];
+                }
+                else {
+                    num2 = Math.floor(num / 2)
+                    document.getElementById("mypic").src=pics_src[num2];
+                }
+            } 
+            </script>
+    </body>
+</html>

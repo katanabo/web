@@ -47,6 +47,8 @@
 [剛体2](08_rigid_body/step5_rigid-move.html)
 [ギャラ記録くん1号](09_localstorage/index.html)
 [AIチャット](14_voicechat/interface.html)
+[Anykey](15_random_image/anykey.htmll)
+[booking](16_booking/booking.html)
 </article>
 <aside id="ToC"></aside>
 </div>

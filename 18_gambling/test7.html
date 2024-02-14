@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Money Machine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    html {
+         touch-action: manipulation;
+    }
+    #money-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .money-label {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    .money-value {
+        font-size: 24px;
+        border: 2px solid #333;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    button {
+        margin: 10px 10px; /* ボタン間の余白を追加 */
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+/Edge */
+        user-select: none; /* 複数ブラウザ対応 */
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    .arrow-right, .arrow-left {
+        margin: 0 5px; /* 矢印の余白を調整 */
+    }
+    #chart-container {
+        width: 90%; /* グラフの横幅を指定 */
+        margin: 0 auto; /* グラフを中央に配置 */
+        overflow-x: auto; /* 横スクロールバーが必要になった場合に表示 */
+    }
+    canvas {
+        margin-top: 20px; /* グラフの上部の余白を追加 */
+        max-width: 100%; /* グラフの最大幅を設定 */
+        height: auto; /* グラフの高さを自動調整 */
+    }
+    #table-container {
+        margin-top: 20px;
+    }
+    table {
+        width: 50%;
+        margin: 0 auto;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+<div id="chart-container">
+    <canvas id="totalChart" width="400" height="200"></canvas>
+</div>
+<div id="money-container">
+    <div>
+        <div class="money-label">所持金</div>
+        <div class="money-value" id="moneyAmount">10,000</div>
+    </div>
+    <div>
+        <div class="money-label">投資額</div>
+        <div class="money-value" id="insertedAmount">10,000</div>
+    </div>
+    <div>
+        <div class="money-label">総資産</div>
+        <div class="money-value" id="totalAmount">20,000</div>
+    </div>
+</div>
+<button type="button" onmousedown="withdrawInterval()" onmouseup="clearInterval(buttonInterval)"><span class="arrow-left">&#8592;</span>出金</button>
+<button type="button" onmousedown="depositInterval()" onmouseup="clearInterval(buttonInterval)">入金<span class="arrow-right">&#8594;</span></button>
+<div id="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>回数</th>
+                <th>総資産</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let money = 10000;
+    let insertedMoney = 10000;
+    let totalData = [money + insertedMoney]; // 初期値を追加
+
+    let buttonInterval;
+
+    function updateMoney() {
+        document.getElementById("moneyAmount").textContent = money.toLocaleString();
+        document.getElementById("insertedAmount").textContent = insertedMoney.toLocaleString();
+        document.getElementById("totalAmount").textContent = (money + insertedMoney).toLocaleString();
+    }
+
+    function moneyMachine() {
+        setInterval(function() {
+            const chance = Math.random();
+            if (chance < 0.5) {
+                insertedMoney *= 1.5;
+            } else {
+                insertedMoney *= 0.6;
+            }
+            updateMoney();
+            updateChart();
+        }, 10000);
+    }
+
+    function deposit() {
+        if (money > 0) {
+            money -= 1000;
+            insertedMoney += 1000;
+            updateMoney();
+        }
+    }
+
+    function withdraw() {
+        if (insertedMoney > 0) {
+            money += 1000;
+            insertedMoney -= 1000;
+            updateMoney();
+        }
+    }
+
+    function depositInterval() {
+        deposit();
+        buttonInterval = setInterval(deposit, 300); // 300ミリ秒ごとにdeposit()を実行
+    }
+
+    function withdrawInterval() {
+        withdraw();
+        buttonInterval = setInterval(withdraw, 300); // 300ミリ秒ごとにwithdraw()を実行
+    }
+
+    const totalCtx = document.getElementById('totalChart').getContext('2d');
+
+    const chartOptions = {
+        responsive: true, // レスポンシブモードを有効にする
+        maintainAspectRatio: false, // アスペクト比を保持しない
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: '回数'
+                },
+                ticks: {
+                    stepSize: 1 // 1刻みに設定
+                }
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: '金額'
+                }
+            }
+        }
+    };
+
+    const totalChart = new Chart(totalCtx, {
+        type: 'line',
+        data: {
+            labels: [0],
+            datasets: [{
+                label: '総資産の推移',
+                data: totalData,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: chartOptions
+    });
+
+    function updateChart() {
+        totalChart.data.labels.push(totalData.length - 1); // 0から始まるので-1する
+        totalChart.data.datasets[0].data.push(money + insertedMoney);
+        totalChart.update();
+        updateTable();
+    }
+
+    function updateTable() {
+        const tableBody = document.getElementById("data-table");
+        tableBody.innerHTML = "";
+        for (let i = 0; i < totalData.length; i++) {
+            const row = document.createElement("tr");
+            const cell1 = document.createElement("td");
+            const cell2 = document.createElement("td");
+            cell1.textContent = i;
+            cell2.textContent = totalData[i].toLocaleString();
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            tableBody.appendChild(row);
+        }
+    }
+
+    moneyMachine();
+</script>
+</body>
+</html>

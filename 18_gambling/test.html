@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Machine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    #money {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    #inserted {
+        font-size: 18px;
+    }
+</style>
+</head>
+<body>
+<div id="money">所持金: <span id="moneyAmount">10000</span></div>
+<div id="inserted">投入金額: <span id="insertedAmount">1000</span></div>
+
+<script>
+    let money = 10000;
+    let insertedMoney = 1000;
+
+    function updateMoney() {
+        document.getElementById("moneyAmount").textContent = money.toFixed(2);
+        document.getElementById("insertedAmount").textContent = insertedMoney.toFixed(2);
+    }
+
+    function moneyMachine() {
+        setInterval(function() {
+            const chance = Math.random();
+            if (chance < 0.5) {
+                insertedMoney *= 1.5;
+            } else {
+                insertedMoney *= 0.6;
+            }
+            updateMoney();
+        }, 1000);
+    }
+
+    moneyMachine();
+</script>
+</body>
+</html>

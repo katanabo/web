@@ -49,6 +49,7 @@
 [AIチャット](14_voicechat/interface.html)
 [Anykey](15_random_image/anykey.htmll)
 [booking](16_booking/booking.html)
+[gambling](18_gambling/test6.html)
 </article>
 <aside id="ToC"></aside>
 </div>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Machine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    #money-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    #money {
+        font-size: 24px;
+        margin-right: 20px;
+    }
+    #inserted {
+        font-size: 18px;
+    }
+    button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<div id="money-container">
+    <div id="money">所持金: <span id="moneyAmount">10000</span></div>
+    <div id="inserted">投入金額: <span id="insertedAmount">10000</span></div>
+</div>
+<button onclick="deposit()">入金</button>
+<button onclick="withdraw()">出金</button>
+
+<script>
+    let money = 10000;
+    let insertedMoney = 10000;
+
+    function updateMoney() {
+        document.getElementById("moneyAmount").textContent = Math.floor(money);
+        document.getElementById("insertedAmount").textContent = Math.floor(insertedMoney);
+    }
+
+    function moneyMachine() {
+        setInterval(function() {
+            const chance = Math.random();
+            if (chance < 0.5) {
+                insertedMoney *= 1.5;
+            } else {
+                insertedMoney *= 0.6;
+            }
+            updateMoney();
+        }, 8000);
+    }
+
+    function deposit() {
+        if (money > 0) {
+            money--;
+            insertedMoney++;
+            updateMoney();
+        }
+    }
+
+    function withdraw() {
+        if (insertedMoney > 0) {
+            money++;
+            insertedMoney--;
+            updateMoney();
+        }
+    }
+
+    moneyMachine();
+</script>
+</body>
+</html>

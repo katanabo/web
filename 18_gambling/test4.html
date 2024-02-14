@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Machine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding-bottom: 50px; /* グラフの表示に十分な下部の余白を追加 */
+    }
+    #money-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .money-label {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    .money-value {
+        font-size: 24px;
+        border: 2px solid #333;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    .arrow-right {
+        margin-left: 5px;
+    }
+    .arrow-left {
+        margin-right: 5px;
+    }
+    #chart-container {
+        width: 80%; /* グラフの横幅を指定 */
+        margin: 0 auto; /* グラフを中央に配置 */
+    }
+</style>
+</head>
+<body>
+<div id="money-container">
+    <div>
+        <div class="money-label">所持金</div>
+        <div class="money-value" id="moneyAmount">10000</div>
+    </div>
+    <div>
+        <div class="money-label">投資</div>
+        <div class="money-value" id="insertedAmount">10000</div>
+    </div>
+</div>
+<button onclick="withdraw()"><span class="arrow-left">&#8592;</span>出金</button>
+<button onclick="deposit()">入金<span class="arrow-right">&#8594;</span></button>
+<div id="chart-container">
+    <canvas id="investmentChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let money = 10000;
+    let insertedMoney = 10000;
+    let investmentData = [10000]; // 初期値を設定
+
+    function updateMoney() {
+        document.getElementById("moneyAmount").textContent = money.toLocaleString();
+        document.getElementById("insertedAmount").textContent = Math.floor(insertedMoney).toLocaleString();
+    }
+
+    function moneyMachine() {
+        setInterval(function() {
+            const chance = Math.random();
+            if (chance < 0.5) {
+                insertedMoney *= 1.5;
+            } else {
+                insertedMoney *= 0.6;
+            }
+            investmentData.push(Math.floor(insertedMoney)); // 投資データを更新
+            updateMoney();
+            updateChart();
+        }, 10000);
+    }
+
+    function deposit() {
+        if (money > 0) {
+            money--;
+            insertedMoney++;
+            updateMoney();
+        }
+    }
+
+    function withdraw() {
+        if (insertedMoney > 0) {
+            money++;
+            insertedMoney--;
+            updateMoney();
+        }
+    }
+
+    let chart; // グラフオブジェクトを保持する変数
+
+    function updateChart() {
+        if (!chart) { // 初回のみグラフを作成
+            const ctx = document.getElementById('investmentChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from(Array(investmentData.length).keys()).map((_, index) => index + 1), // インデックス+1をラベルとする
+                    datasets: [{
+                        label: '投資額の推移',
+                        data: investmentData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true, // レスポンシブモードを有効にする
+                    maintainAspectRatio: false, // アスペクト比を保持しない
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '回数'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '投資額'
+                            }
+                        }
+                    }
+                }
+            });
+        } else { // 2回目以降はグラフのデータのみ更新
+            chart.data.labels = Array.from(Array(investmentData.length).keys()).map((_, index) => index + 1);
+            chart.data.datasets[0].data = investmentData;
+            chart.update(); // グラフを更新
+        }
+    }
+
+    moneyMachine();
+</script>
+</body>
+</html>

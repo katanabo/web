@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Machine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    #money-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .money-label {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    .money-value {
+        font-size: 24px;
+        border: 2px solid #333;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    .arrow-right {
+        margin-left: 5px;
+    }
+    .arrow-left {
+        margin-right: 5px;
+    }
+</style>
+</head>
+<body>
+<div id="money-container">
+    <div>
+        <div class="money-label">所持金</div>
+        <div class="money-value" id="moneyAmount">10000</div>
+    </div>
+    <div>
+        <div class="money-label">投資</div>
+        <div class="money-value" id="insertedAmount">10000</div>
+    </div>
+</div>
+<button onclick="withdraw()"><span class="arrow-left">&#8592;</span>出金</button>
+<button onclick="deposit()">入金<span class="arrow-right">&#8594;</span></button>
+
+<script>
+    let money = 10000;
+    let insertedMoney = 10000;
+
+    function updateMoney() {
+        document.getElementById("moneyAmount").textContent = money.toLocaleString();
+        document.getElementById("insertedAmount").textContent = insertedMoney.toLocaleString();
+    }
+
+    function moneyMachine() {
+        setInterval(function() {
+            const chance = Math.random();
+            if (chance < 0.5) {
+                insertedMoney *= 1.5;
+            } else {
+                insertedMoney *= 0.6;
+            }
+            updateMoney();
+        }, 5000);
+    }
+
+    function deposit() {
+        if (money > 0) {
+            money--;
+            insertedMoney++;
+            updateMoney();
+        }
+    }
+
+    function withdraw() {
+        if (insertedMoney > 0) {
+            money++;
+            insertedMoney--;
+            updateMoney();
+        }
+    }
+
+    moneyMachine();
+</script>
+</body>
+</html>

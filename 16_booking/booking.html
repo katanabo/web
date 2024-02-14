@@ -10,7 +10,7 @@
     <script>
       function OnPost(){
 
-        const URL = "https://script.google.com/macros/s/AKfycbwNGKV1CIAv-IdVVcahw4Fq2wklAPjfBT5EpZ2EFUaXBr0v4Y0U0hw2MaBBv1Tz7cxolQ/exec";
+        const URL = "https://script.google.com/macros/s/AKfycbzt70Y7WGYT0EOPUmTWw2P5BDiCz8dJdOtl5UPDKXrxEK9WIJYgbSX1nErGg4afxtl9zw/exec";
 
         let SendDATA = {
           "column_1" : document.getElementById("column_1").value,
@@ -27,21 +27,22 @@
         fetch(URL, postparam);
       }
       function OnGet(){
-
-        const URL = "https://script.google.com/macros/s/AKfycbwNGKV1CIAv-IdVVcahw4Fq2wklAPjfBT5EpZ2EFUaXBr0v4Y0U0hw2MaBBv1Tz7cxolQ/exec";
+        
+        const URL = "https://script.google.com/macros/s/AKfycbzt70Y7WGYT0EOPUmTWw2P5BDiCz8dJdOtl5UPDKXrxEK9WIJYgbSX1nErGg4afxtl9zw/exec";
 
         fetch(URL)
-        .then(response => {
-          return response.json();
-        })
-        .then(data => {
-          render_text = data.message;
-          document.getElementById("get_value").innerHTML = render_text;
-        })
-        .catch(error => {
-          document.getElementById("get_value").innerHTML = error;
-        });
-      }
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+              render_text = data.message;
+              document.getElementById("get_value").innerHTML = render_text;
+            })
+            .catch(error => {
+              document.getElementById("get_value").innerHTML = error;
+            });
+        }
+
     </script>
   </head>
   <body>

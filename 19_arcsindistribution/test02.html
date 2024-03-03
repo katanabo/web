@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sand Simulation</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    canvas {
+        display: block;
+        margin: auto;
+        background-color: #eee;
+    }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
+<script>
+    const Engine = Matter.Engine;
+    const World = Matter.World;
+    const Bodies = Matter.Bodies;
+
+    const engine = Engine.create();
+    const world = engine.world;
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const bagWidth = 100;
+    const bagHeight = 50;
+    let bagX = canvas.width / 2 - bagWidth / 2;
+    let bagY = canvas.height / 2 - bagHeight / 2;
+
+    let lastDropTime = 0;
+    let dropInterval = 200; // 0.2秒ごとにボールを落とす
+    let ballSize = 5;
+
+    let groundHeight = 20;
+
+    const ground = Bodies.rectangle(canvas.width / 2, canvas.height - groundHeight / 2, canvas.width, groundHeight, { isStatic: true });
+    World.add(world, ground);
+
+    const bag = Bodies.rectangle(canvas.width / 2, canvas.height / 2, bagWidth, bagHeight, { isStatic: true });
+    World.add(world, bag);
+
+    let amplitude = 50;
+    let period = 2000; // 2秒ごとに振動
+    let startTime = new Date().getTime();
+
+    function drawBag() {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(bag.position.x - bagWidth / 2, bag.position.y - bagHeight / 2, bagWidth, bagHeight);
+    }
+
+    function dropSand() {
+        const currentTime = new Date().getTime();
+        if (currentTime - lastDropTime > dropInterval) {
+            const ball = Bodies.circle(bag.position.x, bag.position.y + bagHeight / 2, ballSize, { restitution: 0, friction: 0, frictionStatic: 0, frictionAir: 0 });
+            World.add(world, ball);
+
+            // 地面との衝突後に固定する
+            Matter.Events.on(ball, 'collisionStart', function(event) {
+                event.pairs.forEach(pair => {
+                    if (pair.bodyB === ground) {
+                        ball.isStatic = true;
+                        ball.friction = 1; // 摩擦を増やして接地後に動かないようにする
+                    }
+                });
+            });
+
+            lastDropTime = currentTime;
+        }
+    }
+
+    function drawBalls() {
+        ctx.fillStyle = 'brown';
+        world.bodies.forEach(body => {
+            if (body.label === 'Circle Body') {
+                ctx.beginPath();
+                ctx.arc(body.position.x, body.position.y, body.circleRadius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
+    }
+
+    function update() {
+        Engine.update(engine);
+        bag.position.x = canvas.width / 2 + amplitude * Math.sin(2 * Math.PI * (new Date().getTime() - startTime) / period);
+    }
+
+    function drawGround() {
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBag();
+        dropSand();
+        drawBalls();
+        drawGround();
+        update();
+
+        requestAnimationFrame(animate);
+    }
+
+    animate(); // アニメーション開始
+
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        .container {
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .tower {
+            display: inline-block;
+            margin: 10px;
+            width: 70px;
+            height: 500px;
+            background-color: #f0f0f0;
+            position: relative;
+            cursor: pointer;
+            box-sizing: border-box; /* Ensure that the border is included in the element's dimensions */
+        }
+
+        .block {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            bottom: 0;
+            left: 10px; /* Center the block within the tower */
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .selected {
+            border: 2px solid black;
+            box-shadow: inset 0 0 0 1px black; /* Inner border */
+        }
+
+        .disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .undo-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #e7e7e7;
+            border: 1px solid #d4d4d4;
+            border-radius: 5px;
+        }
+
+        .undo-button:hover {
+            background-color: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="tower1" class="tower" onclick="selectTower(1)"></div>
+        <div id="tower2" class="tower" onclick="selectTower(2)"></div>
+        <div id="tower3" class="tower" onclick="selectTower(3)"></div>
+        <div class="undo-button" onclick="undoMove()">Undo</div>
+    </div>
+
+    <script>
+        var towers = [
+            { id: "tower1", color: "red", blocks: getRandomBlocks(["red"]) },
+            { id: "tower2", color: "blue", blocks: getRandomBlocks(["blue"]) },
+            { id: "tower3", color: "green", blocks: getRandomBlocks(["green"]) }
+        ];
+        var selectedTowers = [];
+        var moveHistory = [];
+
+        function getRandomBlocks(excludeColors) {
+            var colors = ["red", "blue", "green"].filter(c => !excludeColors.includes(c));
+            return Math.floor(Math.random() * 4) + 1;
+        }
+
+        function selectTower(towerIndex) {
+            var tower = towers[towerIndex - 1];
+            if (tower.blocks === 0) {
+                return;
+            }
+
+            if (selectedTowers.includes(towerIndex)) {
+                selectedTowers = selectedTowers.filter(t => t !== towerIndex);
+            } else {
+                selectedTowers.push(towerIndex);
+                renderTowers(); // Render towers to show the selection border
+                if (selectedTowers.length === 2) {
+                    setTimeout(() => {
+                        updateTowers();
+                        renderTowers();
+                    }, 200); // Delay the update to show the second selection border briefly
+                    return;
+                }
+            }
+
+            renderTowers();
+        }
+
+        function updateTowers() {
+            var unselectedTowerIndex = [1, 2, 3].find(t => !selectedTowers.includes(t)) - 1;
+            moveHistory.push([...towers.map(t => t.blocks)]); // Save the current state before updating
+            towers[selectedTowers[0] - 1].blocks--;
+            towers[selectedTowers[1] - 1].blocks--;
+            towers[unselectedTowerIndex].blocks += 2;
+            selectedTowers = [];
+        }
+
+        function undoMove() {
+            if (moveHistory.length > 0) {
+                var previousState = moveHistory.pop();
+                towers.forEach((tower, index) => {
+                    tower.blocks = previousState[index];
+                });
+                renderTowers();
+            }
+        }
+
+        function renderTowers() {
+            towers.forEach(tower => {
+                var towerElement = document.getElementById(tower.id);
+                towerElement.innerHTML = "";
+                towerElement.className = `tower ${tower.blocks === 0 ? 'disabled' : ''} ${selectedTowers.includes(towers.indexOf(tower) + 1) ? 'selected' : ''}`;
+                for (let i = 0; i < tower.blocks; i++) {
+                    var blockElement = document.createElement("div");
+                    blockElement.className = `block ${tower.color}`;
+                    blockElement.style.bottom = `${i * 55}px`; // Adjust the bottom position for each block
+                    towerElement.appendChild(blockElement);
+                }
+            });
+        }
+
+        renderTowers();
+    </script>
+</body>
+</html>

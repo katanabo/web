@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Two Vectors Distribution</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        #simulationArea {
+            width: 300px;
+            height: 300px;
+            border: 1px solid black;
+            margin-bottom: 20px;
+        }
+        #histogramCanvas {
+            width: 300px; /* 横幅をシミュレーターと同じに */
+            height: 150px; /* 縦の長さを増やす */
+            margin-bottom: 20px;
+        }
+        #startSimulation {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="histogramCanvas" width="300" height="300"></canvas>
+    <canvas id="simulationArea" width="300" height="300"></canvas>
+    <button id="startSimulation">Start Simulation</button>
+    <table id="lengthTable">
+        <thead>
+            <tr>
+                <th>Distance</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        const simulationCanvas = document.getElementById('simulationArea');
+        const histogramCanvas = document.getElementById('histogramCanvas');
+        const startSimulationButton = document.getElementById('startSimulation');
+        const histogramBins = new Array(30).fill(0); // Increased the number of bins
+        let simulationInterval;
+        let histogramChart;
+        const lengthTableBody = document.getElementById('lengthTable').getElementsByTagName('tbody')[0];
+
+const updateLengthTable = (distance) => {
+    const row = lengthTableBody.insertRow(-1);
+    const cell = row.insertCell(0);
+    cell.textContent = distance.toFixed(2);
+};
+
+        const drawVector = (context, startX, startY, length, angle) => {
+            const endX = startX + length * Math.cos(angle);
+            const endY = startY + length * Math.sin(angle);
+            context.beginPath();
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            return { endX, endY };
+        };
+
+        const drawDashedLine = (context, startX, startY, endX, endY) => {
+            context.beginPath();
+            context.setLineDash([5, 5]);
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            context.setLineDash([]);
+        };
+
+        const updateHistogram = (distance) => {
+    const binIndex = Math.min(Math.floor(distance * histogramBins.length / 2), histogramBins.length - 1);
+    histogramBins[binIndex]++;
+    renderHistogram();
+};
+
+
+        const renderHistogram = () => {
+            const binSize = 2 / histogramBins.length; // 各ビンのサイズを計算
+            const labels = histogramBins.map((_, index) => (index * binSize).toFixed(2) + '-' + ((index + 1) * binSize).toFixed(2));
+            const data = {
+                labels: labels,
+                datasets: [{
+                label: 'Distance Distribution',
+                data: histogramBins,
+                backgroundColor: 'blue',
+                }]
+            };
+            if (histogramChart) {
+                histogramChart.data.datasets[0].data = histogramBins;
+                histogramChart.update();
+            } else {
+                histogramChart = new Chart(histogramCanvas, {
+                type: 'bar',
+                data: data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                maintainAspectRatio: true,
+                responsive: false
+            }
+        });
+    }
+};
+
+        const drawAxes = (context) => {
+            context.beginPath();
+            context.moveTo(150, 0);
+            context.lineTo(150, 300);
+            context.moveTo(0, 150);
+            context.lineTo(300, 150);
+            context.stroke();
+        };
+
+        startSimulationButton.addEventListener('click', () => {
+    clearInterval(simulationInterval);
+    lengthTableBody.innerHTML = ''; // テーブルをクリア
+    simulationInterval = setInterval(() => {
+        const context = simulationCanvas.getContext('2d');
+        context.clearRect(0, 0, simulationCanvas.width, simulationCanvas.height);
+
+        drawAxes(context);
+
+        const firstVector = drawVector(context, simulationCanvas.width / 2, simulationCanvas.height / 2, 100, Math.random() * 2 * Math.PI);
+        const secondVector = drawVector(context, firstVector.endX, firstVector.endY, 100, Math.random() * 2 * Math.PI);
+        drawDashedLine(context, simulationCanvas.width / 2, simulationCanvas.height / 2, secondVector.endX, secondVector.endY);
+
+        const distance = Math.sqrt(Math.pow(secondVector.endX - simulationCanvas.width / 2, 2) + Math.pow(secondVector.endY - simulationCanvas.height / 2, 2)) / 100;
+        updateHistogram(distance);
+        updateLengthTable(distance); // テーブルに距離を追加
+    }, 100);
+});
+
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>単振動と砂のシミュレーション</title>
+<style>
+  body { margin: 0; overflow: hidden; }
+  #world { width: 100%; height: 100vh; position: relative; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/matter-js"></script>
+</head>
+<body>
+<div id="world"></div>
+<script>
+  // matter.js のモジュールを定義
+  const { Engine, Render, Runner, Bodies, Composite, Body, Events } = Matter;
+
+  // エンジンとレンダラーの作成
+  const engine = Engine.create(),
+        world = engine.world;
+  const render = Render.create({
+    element: document.getElementById('world'),
+    engine: engine,
+    options: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      wireframes: false
+    }
+  });
+
+  // 地面を作成
+  const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight, window.innerWidth, 60, { isStatic: true });
+
+  // 単振動する物体を作成（isStaticをfalseにして動けるようにする）
+  const oscillatingBody = Bodies.rectangle(window.innerWidth / 2, 100, 80, 40, { isStatic: false });
+
+  // 単振動のパラメータ
+  let oscillationAngle = 0;
+  let oscillationSpeed = 0.05; // 振動の速さ
+  let oscillationMagnitude = window.innerWidth * 0.15; // 振動の幅
+
+  // エンジンの更新ごとに単振動の力を加える
+  Events.on(engine, 'beforeUpdate', function(event) {
+    // 単振動のX座標を計算
+    let oscillationX = window.innerWidth / 2 + oscillationMagnitude * Math.sin(oscillationAngle);
+    // 物体の位置を更新
+    Body.setPosition(oscillatingBody, { x: oscillationX, y: 100 });
+    oscillationAngle += oscillationSpeed;
+  });
+
+  // 砂の粒を作成する関数
+  function dropSand() {
+    const x = oscillatingBody.position.x,
+          y = oscillatingBody.position.y + 20;
+    const sandParticle = Bodies.circle(x, y, 5, { restitution: 0.5, density: 0.001 });
+    Composite.add(world, sandParticle);
+  }
+
+  // 定期的に砂を落とす
+  setInterval(dropSand, 100);
+
+  // 物体と地面をワールドに追加
+  Composite.add(world, [ground, oscillatingBody]);
+
+  // レンダラーとランナーを実行
+  Render.run(render);
+  const runner = Runner.create();
+  Runner.run(runner, engine);
+
+  // ウィンドウのリサイズに対応
+  window.addEventListener('resize', function() {
+    Render.lookAt(render, {
+      min: { x: 0, y: 0 },
+      max: { x: window.innerWidth, y: window.innerHeight }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>単振動ブロックシミュレーション</title>
+<style>
+  body, html { height: 100%; margin: 0; }
+  #container { position: relative; width: 100%; height: 80vh; background: #f0f0f0; }
+  .block { width: 20px; height: 20px; background-color: #333; position: absolute; }
+  .oscillator { width: 50px; height: 10px; background-color: red; position: absolute; top: 0; }
+</style>
+</head>
+<body>
+<div id="container">
+  <div class="oscillator" id="oscillator"></div>
+</div>
+
+<script>
+  const container = document.getElementById('container');
+  const oscillator = document.getElementById('oscillator');
+  const containerWidth = container.clientWidth;
+  const containerHeight = container.clientHeight;
+  const blockWidth = 15;
+  const gridWidth = Math.floor(containerWidth / blockWidth);
+  const gridHeight = Math.floor(containerHeight / blockWidth);
+  let grid = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(false));
+  let blocks = [];
+
+  // 単振動する物体の初期設定
+  let oscillationPosition = gridWidth / 2;
+  let oscillationAmplitude = 8;
+  let oscillationAngle = 0;
+  let oscillationSpeed = 0.05;
+
+  // ブロックを落下させる
+  function dropBlock() {
+    const positionX = Math.floor(oscillationPosition);
+    if (!grid[0][positionX]) {
+      const block = document.createElement('div');
+      block.classList.add('block');
+      block.style.left = `${positionX * blockWidth}px`;
+      block.style.top = `${0}px`;
+      container.appendChild(block);
+      blocks.push({ element: block, x: positionX, y: 0 });
+      grid[0][positionX] = true;
+    }
+  }
+
+  // 単振動の更新
+  function updateOscillation() {
+    oscillationPosition = (gridWidth / 2) + oscillationAmplitude * Math.sin(oscillationAngle);
+    oscillator.style.left = `${oscillationPosition * blockWidth - oscillator.offsetWidth / 2}px`;
+    oscillationAngle += oscillationSpeed;
+  }
+
+  // ブロックの落下と積み重ねの更新
+  function updateBlocks() {
+    for (let i = blocks.length - 1; i >= 0; i--) {
+      const block = blocks[i];
+      if (block.y < gridHeight - 1 && !grid[block.y + 1][block.x]) {
+        grid[block.y][block.x] = false;
+        block.y++;
+        grid[block.y][block.x] = true;
+        block.element.style.top = `${block.y * blockWidth}px`;
+      }
+    }
+  }
+
+  // ゲームループ
+  function gameLoop() {
+    updateOscillation();
+    updateBlocks();
+    requestAnimationFrame(gameLoop);
+  }
+
+  // ブロックの生成間隔
+  setInterval(dropBlock, 100);
+  
+  gameLoop();
+</script>
+</body>
+</html>

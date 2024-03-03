@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Two Vectors Distribution</title>
+    <style>
+        #simulationArea {
+            width: 500px;
+            height: 500px;
+            border: 1px solid black;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        #histogramArea {
+            width: 500px;
+            height: 100px;
+            border: 1px solid black;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .bar {
+            height: 100%;
+            background-color: blue;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="histogramArea"></div>
+    <canvas id="simulationArea" width="500" height="500"></canvas>
+    <button id="startSimulation">Start Simulation</button>
+
+    <script>
+        const simulationArea = document.getElementById('simulationArea');
+        const histogramArea = document.getElementById('histogramArea');
+        const startSimulationButton = document.getElementById('startSimulation');
+        const histogramBins = new Array(10).fill(0);
+
+        const drawVector = (context, startX, startY, length, angle) => {
+            const endX = startX + length * Math.cos(angle);
+            const endY = startY + length * Math.sin(angle);
+            context.beginPath();
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            return { endX, endY };
+        };
+
+        const drawDashedLine = (context, startX, startY, endX, endY) => {
+            context.beginPath();
+            context.setLineDash([5, 5]);
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            context.setLineDash([]);
+        };
+
+        const updateHistogram = (distance) => {
+            const binIndex = Math.min(Math.floor(distance / (Math.sqrt(2) * 100) * histogramBins.length), histogramBins.length - 1);
+            histogramBins[binIndex]++;
+            renderHistogram();
+        };
+
+        const renderHistogram = () => {
+            histogramArea.innerHTML = '';
+            const maxCount = Math.max(...histogramBins);
+            histogramBins.forEach((count, index) => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.width = `${histogramArea.clientWidth / histogramBins.length}px`;
+                bar.style.height = `${(count / maxCount) * 100}%`;
+                bar.style.left = `${(index * histogramArea.clientWidth) / histogramBins.length}px`;
+                histogramArea.appendChild(bar);
+            });
+        };
+
+        startSimulationButton.addEventListener('click', () => {
+            const context = simulationArea.getContext('2d');
+            context.clearRect(0, 0, simulationArea.width, simulationArea.height);
+
+            const firstVector = drawVector(context, simulationArea.width / 2, simulationArea.height / 2, 100, Math.random() * 2 * Math.PI);
+            const secondVector = drawVector(context, firstVector.endX, firstVector.endY, 100, Math.random() * 2 * Math.PI);
+            drawDashedLine(context, simulationArea.width / 2, simulationArea.height / 2, secondVector.endX, secondVector.endY);
+
+            const distance = Math.sqrt(Math.pow(secondVector.endX - simulationArea.width / 2, 2) + Math.pow(secondVector.endY - simulationArea.height / 2, 2));
+            updateHistogram(distance);
+        });
+    </script>
+</body>
+</html>

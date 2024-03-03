@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sand Simulation</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    canvas {
+        display: block;
+        margin: auto;
+        background-color: #eee;
+    }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
+<script>
+    const Engine = Matter.Engine;
+    const World = Matter.World;
+    const Bodies = Matter.Bodies;
+
+    const engine = Engine.create();
+    const world = engine.world;
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const bagWidth = 100;
+    const bagHeight = 50;
+    let bagX = canvas.width / 2 - bagWidth / 2;
+    let bagY = canvas.height / 2 - bagHeight / 2;
+
+    let lastDropTime = 0;
+    let dropInterval = 1000; // 1秒ごとに球を落とす
+    let ballSize = 10;
+
+    let groundHeight = 20;
+
+    const ground = Bodies.rectangle(canvas.width / 2, canvas.height - groundHeight / 2, canvas.width, groundHeight, { isStatic: true });
+    World.add(world, ground);
+
+    function drawBag() {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(bagX, bagY, bagWidth, bagHeight);
+    }
+
+    function dropSand() {
+        const currentTime = new Date().getTime();
+        if (currentTime - lastDropTime > dropInterval) {
+            const ball = Bodies.circle(bagX + bagWidth / 2, bagY + bagHeight, ballSize, { restitution: 0.5 });
+            World.add(world, ball);
+            lastDropTime = currentTime;
+        }
+    }
+
+    function drawBalls() {
+        ctx.fillStyle = 'brown';
+        world.bodies.forEach(body => {
+            if (body.label === 'Circle Body') {
+                ctx.beginPath();
+                ctx.arc(body.position.x, body.position.y, body.circleRadius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
+    }
+
+    function update() {
+        Engine.update(engine);
+    }
+
+    function drawGround() {
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBag();
+        dropSand();
+        drawBalls();
+        drawGround();
+        update();
+
+        requestAnimationFrame(animate);
+    }
+
+    animate(); // アニメーション開始
+
+</script>
+</body>
+</html>

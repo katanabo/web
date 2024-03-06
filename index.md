@@ -51,6 +51,7 @@
 [booking](16_booking/booking.html)
 [gambling](18_gambling/test7.html)
 [タワーゲーム](20_kamereon_block/test04.html)
+[最適交差点通行](21_intersection/test01.html)
 </article>
 <aside id="ToC"></aside>
 </div>

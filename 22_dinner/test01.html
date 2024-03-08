@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>たなぶ〜晩御飯どうする〜？</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <style>
+        html {
+          touch-action: manipulation;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .button-container button {
+            margin: 3px;
+            padding: 10px;
+            width: 60%;
+            font-size: 15px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background-color: #add8e6;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #333;
+        }
+        .button-container button.selected {
+            background-color: #333;
+        }
+        #second-screen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        #second-screen h2 {
+            margin: 10px 0;
+            font-size: 24px;
+        }
+        #final-text {
+            color: #d2691e;
+            font-weight: bold;
+        }
+        #second-screen button {
+            padding: 10px 20px;
+            font-size: 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #d2691e;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #second-screen button:hover {
+            background-color: #f4a460;
+        }
+    </style>
+</head>
+<body>
+    <div id="first-screen" class="button-container">
+        <!-- ボタンはJavaScriptで生成されます -->
+    </div>
+    <div id="second-screen">
+        <div id="selected-texts"></div>
+        <h2 id="final-text"></h2>
+        <button onclick="location.reload()">もう一度やる</button>
+    </div>
+
+    <script>
+        const hiragana = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん';
+        let selectedButtons = [];
+
+        function generateRandomHiragana(length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += hiragana.charAt(Math.floor(Math.random() * hiragana.length));
+            }
+            return result;
+        }
+
+        function createButtons() {
+            const container = document.getElementById('first-screen');
+            for (let i = 0; i < 20; i++) {
+                const button = document.createElement('button');
+                button.textContent = generateRandomHiragana(3) + '〜晩御飯どうする〜？';
+                button.onclick = function() {
+                    if (selectedButtons.includes(button)) {
+                        const index = selectedButtons.indexOf(button);
+                        selectedButtons.splice(index, 1);
+                        button.classList.remove('selected');
+                    } else if (selectedButtons.length < 3) {
+                        selectedButtons.push(button);
+                        button.classList.add('selected');
+                    }
+
+                    if (selectedButtons.length === 3) {
+                        goToSecondScreen();
+                    }
+                };
+                container.appendChild(button);
+            }
+        }
+
+        function goToSecondScreen() {
+            const firstScreen = document.getElementById('first-screen');
+            const secondScreen = document.getElementById('second-screen');
+            firstScreen.style.display = 'none';
+            secondScreen.style.display = 'block';
+
+            let selectedTexts = '';
+            selectedButtons.forEach(button => {
+                selectedTexts += button.textContent + '<br>';
+            });
+
+            document.getElementById('selected-texts').innerHTML = '選択した文字列:<br>' + selectedTexts;
+
+            const finalHiragana = generateFinalHiragana();
+            document.getElementById('final-text').innerHTML = '生成された文字列:<br> ' + finalHiragana + '〜晩御飯どうする〜？';
+        }
+
+        function generateFinalHiragana() {
+            let finalHiragana = '';
+            for (let i = 0; i < 3; i++) {
+                const randomIndex = Math.floor(Math.random() * 3);
+                finalHiragana += selectedButtons[i].textContent.charAt(randomIndex);
+            }
+            return finalHiragana;
+        }
+
+        createButtons();
+    </script>
+</body>
+</html>

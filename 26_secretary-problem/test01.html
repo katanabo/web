@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secretary Problem Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    canvas {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Secretary Problem Simulator</h1>
+  <label for="n">Number of Secretaries (n):</label>
+  <input type="number" id="n" value="10" min="1">
+  <br>
+  <label for="reject">Number to Reject Initially:</label>
+  <input type="number" id="reject" value="3" min="0">
+  <br>
+  <button id="runSimulations">Run 30 Simulations</button>
+  <br>
+  <canvas id="chart"></canvas>
+  <p id="result"></p>
+  <p id="probability"></p>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
+    let chart;
+    let bestCandidateSelected = 0;
+    let totalSimulations = 0;
+    const data = [0, 0];
+
+    function runSimulations() {
+      const n = parseInt(document.getElementById('n').value);
+      const reject = parseInt(document.getElementById('reject').value);
+
+      for (let i = 0; i < 3000; i++) {
+        const candidates = Array.from({ length: n }, (_, j) => j + 1);
+        candidates.sort((a, b) => Math.random() - 0.5); // Shuffle candidates
+
+        let bestSeen = -Infinity;
+        let selectedCandidate = null;
+
+        for (let j = 0; j < reject; j++) {
+          bestSeen = Math.max(bestSeen, candidates[j]);
+        }
+
+        for (let j = reject; j < n; j++) {
+          if (candidates[j] > bestSeen) {
+            selectedCandidate = candidates[j];
+            break;
+          }
+        }
+
+        const bestCandidate = Math.max(...candidates);
+
+        if (selectedCandidate === bestCandidate) {
+          bestCandidateSelected++;
+          data[0]++;
+        } else {
+          data[1]++;
+        }
+      }
+
+      totalSimulations += 3000;
+      const probability = bestCandidateSelected / totalSimulations;
+      document.getElementById('result').textContent = `Best candidate selected ${bestCandidateSelected} time(s) out of ${totalSimulations} simulations.`;
+      document.getElementById('probability').textContent = `Probability: ${(probability * 100).toFixed(2)}%`;
+
+      if (chart) {
+        chart.data.datasets[0].data = data;
+        chart.update();
+      } else {
+        chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Best Candidate Selected', 'Best Candidate Not Selected'],
+            datasets: [
+              {
+                label: 'Simulation Result',
+                data: data,
+                backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+    }
+
+    document.getElementById('runSimulations').addEventListener('click', runSimulations);
+  </script>
+</body>
+</html>

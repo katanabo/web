@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音打</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            height: 100vh;
+            justify-content: center;
+        }
+        .staff-container {
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            margin: 20px;
+            background-color: #fff;
+            border: 2px solid #000;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .staff {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 150px;
+        }
+        .clef {
+            font-size: 120px;
+            line-height: 0.8;
+            margin-right: 20px;
+        }
+        .lines {
+            position: relative;
+            flex: 1;
+            height: 100%;
+        }
+        .line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #000;
+        }
+        .line:nth-child(1) { top: 20%; }
+        .line:nth-child(2) { top: 40%; }
+        .line:nth-child(3) { top: 60%; }
+        .line:nth-child(4) { top: 80%; }
+        .line:nth-child(5) { top: 100%; }
+        .note {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .note::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background: #000;
+            left: 50%;
+            top: -40px;
+        }
+        .hint {
+            margin-top: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>音打</h1>
+    <div class="staff-container">
+        <div class="staff">
+            <div class="clef">𝄞</div>
+            <div class="lines" id="lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
+    </div>
+    <div class="hint" id="hint">次の音符: ド (c)</div>
+    <script>
+        const notes = [
+            {key: 'c', name: 'ド', top: '95%'},
+            {key: 'd', name: 'レ', top: '85%'},
+            {key: 'e', name: 'ミ', top: '75%'},
+            {key: 'f', name: 'ファ', top: '65%'},
+            {key: 'g', name: 'ソ', top: '55%'},
+            {key: 'a', name: 'ラ', top: '45%'},
+            {key: 'b', name: 'シ', top: '35%'}
+        ];
+
+        let currentNoteIndex = 0;
+        const hintElement = document.getElementById('hint');
+        const lines = document.getElementById('lines');
+
+        function updateHint() {
+            const note = notes[currentNoteIndex];
+            hintElement.textContent = `次の音符: ${note.name} (${note.key})`;
+        }
+
+        function addNoteToLines(note) {
+            const noteElement = document.createElement('div');
+            noteElement.classList.add('note');
+            noteElement.style.top = note.top;
+            noteElement.style.left = `${lines.children.length * 30}px`;
+            lines.appendChild(noteElement);
+        }
+
+        function getRandomNoteIndex() {
+            return Math.floor(Math.random() * notes.length);
+        }
+
+        document.addEventListener('keydown', function(event) {
+            const key = event.key.toLowerCase();
+            if (key === notes[currentNoteIndex].key) {
+                addNoteToLines(notes[currentNoteIndex]);
+                currentNoteIndex = getRandomNoteIndex();
+                updateHint();
+            }
+        });
+
+        currentNoteIndex = getRandomNoteIndex();
+        updateHint();
+    </script>
+</body>
+</html>

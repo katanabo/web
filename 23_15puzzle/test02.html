@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>15パズル</title>
+  <style>
+    #board {
+      width: 240px;
+      height: 240px;
+      border: 1px solid black;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .tile {
+      width: 58px;
+      height: 58px;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .blank {
+      background-color: #ccc;
+      cursor: default;
+    }
+
+    .disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <h1>15パズル</h1>
+  <div id="board"></div>
+
+  <script>
+    const board = document.getElementById('board');
+    const tiles = [];
+    const tileNumbers = [];
+    let blankX, blankY;
+
+    // タイルを作成する関数
+    function createTile(number) {
+      const tile = document.createElement('div');
+      tile.classList.add('tile');
+      if (number === 0) {
+        tile.classList.add('blank');
+        blankX = tiles.length % 4;
+        blankY = Math.floor(tiles.length / 4);
+      } else {
+        tile.textContent = number;
+        tile.addEventListener('click', moveTile);
+      }
+      return tile;
+    }
+
+    // タイルを初期化する
+    function initTiles() {
+      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+      numbers.sort(() => Math.random() - 0.5); // 配列をシャッフル
+
+      for (let i = 0; i < 16; i++) {
+        const tile = createTile(numbers[i]);
+        tiles.push(tile);
+        tileNumbers.push(numbers[i]);
+        board.appendChild(tile);
+      }
+      updateTileState();
+    }
+
+    // タイルを動かす関数
+    function moveTile(event) {
+      const tileIndex = tiles.indexOf(event.target);
+      const tileX = tileIndex % 4;
+      const tileY = Math.floor(tileIndex / 4);
+      const rowDiff = Math.abs(tileY - blankY);
+      const colDiff = Math.abs(tileX - blankX);
+
+      if ((rowDiff + colDiff) > 1) {
+        // 空白から2マス以上離れた位置にあるタイルがクリックされた場合
+        const intermediateX = (blankX + tileX) / 2;
+        const intermediateY = (blankY + tileY) / 2;
+        const intermediateIndex = Math.floor(intermediateY) * 4 + Math.floor(intermediateX);
+        moveSingleTile(intermediateIndex);
+        moveSingleTile(tileIndex);
+      } else if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
+        // 隣接するタイルの場合
+        moveSingleTile(tileIndex);
+      }
+      updateTileState();
+    }
+
+    // 単一のタイルを移動させる関数
+    function moveSingleTile(tileIndex) {
+      const tileX = tileIndex % 4;
+      const tileY = Math.floor(tileIndex / 4);
+      const temp = tileNumbers[tileIndex];
+      tileNumbers[tileIndex] = 0;
+      tileNumbers[blankY * 4 + blankX] = temp;
+      updateTiles();
+      blankX = tileX;
+      blankY = tileY;
+    }
+
+    // タイルを更新する関数
+    function updateTiles() {
+      for (let i = 0; i < 16; i++) {
+        const tile = tiles[i];
+        const number = tileNumbers[i];
+        if (number === 0) {
+          tile.classList.add('blank');
+          tile.textContent = '';
+          tile.removeEventListener('click', moveTile);
+        } else {
+          tile.classList.remove('blank');
+          tile.textContent = number;
+          tile.addEventListener('click', moveTile);
+        }
+      }
+    }
+
+    // タイルの状態を更新する関数
+    function updateTileState() {
+      for (let i = 0; i < 16; i++) {
+        const tile = tiles[i];
+        const tileX = i % 4;
+        const tileY = Math.floor(i / 4);
+        const rowDiff = Math.abs(tileY - blankY);
+        const colDiff = Math.abs(tileX - blankX);
+
+        if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
+          tile.classList.remove('disabled');
+        } else {
+          tile.classList.add('disabled');
+        }
+      }
+    }
+
+    // ゲームを初期化する
+    initTiles();
+  </script>
+</body>
+</html>

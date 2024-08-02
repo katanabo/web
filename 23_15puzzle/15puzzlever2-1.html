@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15パズル</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 5px;
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 400px;
+            max-height: 400px;
+            background-color: #ccc;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .tile {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            background-color: #fff;
+            border: 2px solid #999;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            user-select: none;
+        }
+        .empty {
+            background-color: #ccc;
+            border: none;
+            cursor: default;
+        }
+        .state-display {
+            font-size: 1rem;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #999;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="puzzle-container"></div>
+    <div class="state-display" id="state-display"></div>
+    <button id="solve-button">Solve Puzzle</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('puzzle-container');
+            const stateDisplay = document.getElementById('state-display');
+            const solveButton = document.getElementById('solve-button');
+            const size = 4;
+            let tiles = Array.from({ length: size * size }, (_, i) => i);
+            const goalState = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+            let emptyTile = size * size - 1;
+
+            // Shuffle tiles
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Check if the puzzle is solvable
+            function isSolvable(array) {
+                let invCount = 0;
+                for (let i = 0; i < array.length - 1; i++) {
+                    for (let j = i + 1; j < array.length; j++) {
+                        if (array[i] > array[j] && array[i] && array[j]) invCount++;
+                    }
+                }
+                const emptyRow = Math.floor(array.indexOf(0) / size);
+                return (invCount % 2 === 0 && emptyRow % 2 !== 0) || (invCount % 2 !== 0 && emptyRow % 2 === 0);
+            }
+
+            do {
+                shuffle(tiles);
+            } while (!isSolvable(tiles));
+
+            // Create tiles
+            tiles.forEach((num, index) => {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+                if (num === 0) {
+                    tile.classList.add('empty');
+                } else {
+                    tile.textContent = num;
+                }
+                container.appendChild(tile);
+
+                // Add click event
+                tile.addEventListener('click', () => {
+                    const tileIndex = index;
+                    const emptyIndex = tiles.indexOf(0);
+                    const validMoves = getValidMoves(emptyIndex);
+
+                    if (validMoves.includes(tileIndex)) {
+                        moveTiles(tileIndex, emptyIndex);
+                        updateTiles();
+                    }
+                });
+            });
+
+            // Get valid moves (1 step away)
+            function getValidMoves(emptyIndex) {
+                const row = Math.floor(emptyIndex / size);
+                const col = emptyIndex % size;
+                const moves = [];
+
+                if (col > 0) moves.push(emptyIndex - 1); // Left
+                if (col < size - 1) moves.push(emptyIndex + 1); // Right
+                if (row > 0) moves.push(emptyIndex - size); // Up
+                if (row < size - 1) moves.push(emptyIndex + size); // Down
+
+                return moves;
+            }
+
+            // Move tiles
+            function moveTiles(tileIndex, emptyIndex) {
+                const temp = tiles[emptyIndex];
+                tiles[emptyIndex] = tiles[tileIndex];
+                tiles[tileIndex] = temp;
+            }
+
+            // Update tiles and state display
+            function updateTiles() {
+                container.childNodes.forEach((tile, index) => {
+                    const num = tiles[index];
+                    tile.textContent = num === 0 ? '' : num;
+                    tile.classList.toggle('empty', num === 0);
+                });
+                stateDisplay.textContent = `状態: [${tiles.join(', ')}]`;
+            }
+
+            updateTiles();
+
+            // Function to solve the puzzle
+            function solvePuzzle() {
+                let openSet = [];
+                let closedSet = new Set();
+                let startState = {
+                    tiles: [...tiles],
+                    emptyIndex: tiles.indexOf(0),
+                    moves: [],
+                    cost: 0
+                };
+                openSet.push(startState);
+
+                while (openSet.length > 0) {
+                    // Sort openSet by cost
+                    openSet.sort((a, b) => (a.cost + heuristic(a.tiles)) - (b.cost + heuristic(b.tiles)));
+                    let currentState = openSet.shift();
+                    
+                    // If current state is the goal state, perform the moves
+                    if (arraysEqual(currentState.tiles, goalState)) {
+                        performMoves(currentState.moves);
+                        return;
+                    }
+
+                    // Add current state to closed set
+                    closedSet.add(currentState.tiles.toString());
+
+                    // Generate possible next states
+                    let nextStates = generateNextStates(currentState);
+
+                    nextStates.forEach(state => {
+                        if (!closedSet.has(state.tiles.toString())) {
+                            openSet.push(state);
+                        }
+                    });
+                }
+
+                // Heuristic function (Manhattan distance)
+                function heuristic(tiles) {
+                    let distance = 0;
+                    for (let i = 0; i < tiles.length; i++) {
+                        if (tiles[i] !== 0) {
+                            let correctPos = goalState.indexOf(tiles[i]);
+                            let currentRow = Math.floor(i / size);
+                            let currentCol = i % size;
+                            let correctRow = Math.floor(correctPos / size);
+                            let correctCol = correctPos % size;
+                            distance += Math.abs(currentRow - correctRow) + Math.abs(currentCol - correctCol);
+                        }
+                    }
+                    return distance;
+                }
+
+                // Generate next possible states
+                function generateNextStates(state) {
+                    let nextStates = [];
+                    let validMoves = getValidMoves(state.emptyIndex);
+                    validMoves.forEach(move => {
+                        let newTiles = [...state.tiles];
+                        moveTilesArray(newTiles, move, state.emptyIndex);
+                        nextStates.push({
+                            tiles: newTiles,
+                            emptyIndex: move,
+                            moves: [...state.moves, move],
+                            cost: state.cost + 1
+                        });
+                    });
+                    return nextStates;
+                }
+
+                // Perform the moves to solve the puzzle
+                function performMoves(moves) {
+                    moves.forEach((move, index) => {
+                        setTimeout(() => {
+                            moveTiles(move, tiles.indexOf(0));
+                            updateTiles();
+                        }, index * 200);
+                    });
+                }
+
+                // Move tiles in an array
+                function moveTilesArray(array, tileIndex, emptyIndex) {
+                    const temp = array[emptyIndex];
+                    array[emptyIndex] = array[tileIndex];
+                    array[tileIndex] = temp;
+                }
+
+                // Check if two arrays are equal
+                function arraysEqual(arr1, arr2) {
+                    if (arr1.length !== arr2.length) return false;
+                    for (let i = 0; i < arr1.length; i++) {
+                        if (arr1[i] !== arr2[i]) return false;
+                    }
+                    return true;
+                }
+            }
+
+            // Add event listener to the solve button
+            solveButton.addEventListener('click', solvePuzzle);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>連分数可視化</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        max-width: 600px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+      .chart-container {
+        width: 100%;
+        height: 400px;
+        position: relative;
+      }
+      .slider-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 20px;
+      }
+      .slider-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px; 
+      }
+      input{
+        width:250px;
+      }
+      .equation {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-weight: bold;
+      }
+      .chart-container {
+        width: 100%;
+        height: 400px;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chart-container">
+        <canvas id="convergenceChart"></canvas>
+        <div class="equation" id="equationDisplay"></div>
+      </div>
+      <div class="slider-container">
+        <div class="slider-row">
+          <label for="a-slider">a=<span id="a-value"></span></label>
+          <input type="range" id="a-slider" min="-10" max="10" value="2" />
+        </div>
+        <div class="slider-row">
+          <label for="b-slider">b=<span id="b-value"></span></label>
+          <input type="range" id="b-slider" min="-10" max="10" value="3" />
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const aSlider = document.getElementById("a-slider");
+      const bSlider = document.getElementById("b-slider");
+      const aValue = document.getElementById("a-value");
+      const bValue = document.getElementById("b-value");
+      const chartContainer = document.getElementById("convergenceChart");
+      const equationDisplay = document.getElementById("equationDisplay");
+
+      let chart;
+
+      function calculateContinuedFraction(a, b, maxIterations = 100) {
+        let convergenceValues = [];
+        let numerator = b;
+        let denominator = a + b;
+
+        for (let i = 0; i < maxIterations; i++) {
+          convergenceValues.push(numerator / denominator);
+          const temp = denominator;
+          denominator = a + b / denominator;
+          numerator = b;
+        }
+
+        return convergenceValues;
+      }
+
+      function solveQuadraticEquation(a, b) {
+        const discriminant = a * a - 4 * b;
+        if (discriminant > 0) {
+          const root1 = (-a + Math.sqrt(discriminant)) / 2;
+          const root2 = (-a - Math.sqrt(discriminant)) / 2;
+          return `x = ${root1.toFixed(2)} or x = ${root2.toFixed(2)}`;
+        } else if (discriminant === 0) {
+          const root = -a / 2;
+          return `x = ${root.toFixed(2)}`;
+        } else {
+          const realPart = -a / 2;
+          const imaginaryPart = Math.sqrt(-discriminant) / 2;
+          return `x = ${realPart.toFixed(2)} ± ${imaginaryPart.toFixed(2)}i`;
+        }
+      }
+
+      function updateChart(a, b) {
+        const convergenceValues = calculateContinuedFraction(a, b, 30); // 最大反復回数を100に固定
+        equationDisplay.textContent = solveQuadraticEquation(a, -b);
+
+        aValue.textContent = a;
+        bValue.textContent = b;
+
+        if (chart) {
+          chart.data.labels = Array.from({ length: convergenceValues.length }, (_, i) => i + 1);
+          chart.data.datasets[0].data = convergenceValues;
+          chart.update();
+        } else {
+          chart = new Chart(chartContainer, {
+            type: "line",
+            data: {
+              labels: Array.from({ length: convergenceValues.length }, (_, i) => i + 1),
+              datasets: [
+                {
+                  label: "連分数の収束過程",
+                  data: convergenceValues,
+                  borderColor: "rgba(75, 192, 192, 1)",
+                  fill: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: "反復回数",
+                  },
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: "連分数の値",
+                  },
+                },
+              },
+            },
+          });
+        }
+      }
+
+      aSlider.addEventListener("input", () => {
+        updateChart(parseInt(aSlider.value), parseInt(bSlider.value));
+      });
+
+      bSlider.addEventListener("input", () => {
+        updateChart(parseInt(aSlider.value), parseInt(bSlider.value));
+      });
+
+      updateChart(parseInt(aSlider.value), parseInt(bSlider.value));
+    </script>
+  </body>
+</html>

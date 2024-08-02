@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Random Number Simulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+            html {
+          touch-action: manipulation;
+        }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    canvas {
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+
+    #numberLine {
+      width: 100%;
+      height: 50px;
+      background-color: #ddd;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    #fillArea {
+      position: absolute;
+      height: 50px;
+      background-color: #36a2eb;
+      top: 0;
+      left: 0;
+    }
+
+    #labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    #startButton {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Number Simulator</h1>
+  <canvas id="histogram"></canvas>
+  <div id="numberLine">
+    <div id="fillArea"></div>
+  </div>
+  <div id="labels">
+    <span>0</span>
+    <span>10000</span>
+  </div>
+  <button id="startButton">Start</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const startButton = document.getElementById('startButton');
+    const numberLine = document.getElementById('numberLine');
+    const fillArea = document.getElementById('fillArea');
+    const histogramCanvas = document.getElementById('histogram');
+
+    let histogramChart;
+    let histogramData = Array(101).fill(0);
+
+    function initializeHistogram() {
+      histogramChart = new Chart(histogramCanvas, {
+        type: 'bar',
+        data: {
+          labels: Array.from({ length: 101 }, (_, i) => i * 100),
+          datasets: [
+            {
+              label: 'Number Frequency',
+              data: histogramData,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    }
+
+    initializeHistogram();
+
+    startButton.addEventListener('click', () => {
+  const randomNumber = Math.floor(Math.random() * 10001);
+  const fillWidth = (randomNumber / 10000) * numberLine.offsetWidth;
+
+  fillArea.style.width = `${fillWidth}px`;
+
+  histogramData[Math.floor(randomNumber / 100)]++;
+  histogramChart.data.datasets[0].data = [...histogramData];
+  histogramChart.update();
+});
+  </script>
+</body>
+</html>

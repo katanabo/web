@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数当てゲーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #game-area {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>数当てゲーム</h1>
+    <div id="game-area">
+        <p>コンピュータが数字を選択しました。あなたの推測を入力してください:</p>
+        <input type="text" id="guess-input">
+        <button onclick="checkGuess()">推測する</button>
+        <p id="result"></p>
+    </div>
+    <script>
+        const guessInput = document.getElementById('guess-input');
+        const resultText = document.getElementById('result');
+
+        let randomNumber;
+        let minGuess = 1;
+        let maxGuess = 100;
+
+        function generateRandomNumber() {
+            randomNumber = Math.floor(Math.random() * (maxGuess - minGuess + 1)) + minGuess;
+        }
+
+        function checkGuess() {
+            const userGuess = parseInt(guessInput.value);
+
+            if (isNaN(userGuess)) {
+                resultText.textContent = "有効な数字を入力してください";
+                return;
+            }
+
+            if (userGuess < minGuess || userGuess > maxGuess) {
+                resultText.textContent = `推測は ${minGuess} から ${maxGuess} の間である必要があります`;
+                return;
+            }
+
+            if (userGuess === randomNumber) {
+                resultText.textContent = "おめでとう！ 正解です！";
+            } else if (userGuess < randomNumber) {
+                resultText.textContent = "もう少し大きい数字を推測してください";
+            } else {
+                resultText.textContent = "もう少し小さい数字を推測してください";
+            }
+
+            guessInput.value = "";
+            guessInput.focus();
+        }
+
+        generateRandomNumber();
+    </script>
+</body>
+</html>

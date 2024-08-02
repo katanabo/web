@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15パズル</title>
+    <style>
+        html {
+          touch-action: manipulation;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #puzzle {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 2px;
+            width: 90vmin;
+            height: 90vmin;
+        }
+        .tile {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            font-size: 6vmin; /* 数字のサイズを大きくしました */
+        }
+    </style>
+</head>
+<body>
+    <div id="puzzle"></div>
+    <script>
+        const puzzleSize = 4;
+        let emptyTile = { x: puzzleSize - 1, y: puzzleSize - 1 };
+
+        function createTile(value, x, y) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.textContent = value;
+            tile.addEventListener('click', () => moveTile(value, x, y));
+            return tile;
+        }
+
+        function moveTile(value, x, y) {
+            const distanceX = Math.abs(x - emptyTile.x);
+            const distanceY = Math.abs(y - emptyTile.y);
+
+            if ((distanceX === 1 && distanceY === 0) || (distanceX === 0 && distanceY === 1)) {
+                const tileIndex = tiles.findIndex(tile => tile.value === value);
+                tiles[tileIndex].x = emptyTile.x;
+                tiles[tileIndex].y = emptyTile.y;
+                emptyTile.x = x;
+                emptyTile.y = y;
+                renderPuzzle();
+            }
+        }
+
+        function shuffleTiles() {
+    for (let i = tiles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+        [tiles[i].x, tiles[j].x] = [tiles[j].x, tiles[i].x];
+        [tiles[i].y, tiles[j].y] = [tiles[j].y, tiles[i].y];
+    }
+    emptyTile = { x: puzzleSize - 1, y: puzzleSize - 1 };
+}
+
+        function renderPuzzle() {
+            const puzzle = document.getElementById('puzzle');
+            puzzle.innerHTML = '';
+            tiles.forEach(tile => {
+                const tileElement = createTile(tile.value, tile.x, tile.y);
+                tileElement.style.gridColumnStart = tile.x + 1;
+                tileElement.style.gridRowStart = tile.y + 1;
+                puzzle.appendChild(tileElement);
+            });
+        }
+
+        const tiles = [];
+        for (let y = 0; y < puzzleSize; y++) {
+            for (let x = 0; x < puzzleSize; x++) {
+                if (x !== puzzleSize - 1 || y !== puzzleSize - 1) {
+                    tiles.push({ value: y * puzzleSize + x + 1, x, y });
+                }
+            }
+        }
+
+
+
+
+        shuffleTiles();
+        renderPuzzle();
+    </script>
+</body>
+</html>

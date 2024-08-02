@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Random Number Simulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html {
+      touch-action: manipulation;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    canvas {
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+    .numberLine {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .fillArea {
+      position: absolute;
+      height: 20px;
+      background-color: #36a2eb;
+      top: 0;
+      left: 0;
+    }
+    #labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    #startButton {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Number Simulator</h1>
+  <canvas id="histogram" width="600" height="400"></canvas>
+  <div id="bars">
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+    <div class="numberLine"><div class="fillArea"></div></div>
+  </div>
+  <div id="labels">
+    <span>0</span>
+    <span>1000</span>
+  </div>
+  <button id="startButton">Start</button>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const bars = Array.from(document.querySelectorAll('.numberLine'));
+    const histogramCanvas = document.getElementById('histogram');
+    const histogramCtx = histogramCanvas.getContext('2d');
+
+    const histogramData = new Array(10001).fill(0);
+    const barWidth = 0.5;
+    const barSpacing = 0.1;
+
+    function drawHistogram() {
+      histogramCtx.clearRect(0, 0, histogramCanvas.width, histogramCanvas.height);
+
+      const maxValue = Math.max(...histogramData);
+      const barHeight = histogramCanvas.height / maxValue;
+
+      histogramCtx.fillStyle = 'rgba(54, 162, 235, 0.2)';
+      histogramCtx.strokeStyle = 'rgba(54, 162, 235, 1)';
+
+      histogramData.forEach((value, index) => {
+        const x = (index * (barWidth + barSpacing)) + barSpacing;
+        const y = histogramCanvas.height - (value * barHeight);
+        const width = barWidth;
+        const height = value * barHeight;
+
+        histogramCtx.fillRect(x, y, width, height);
+        histogramCtx.strokeRect(x, y, width, height);
+      });
+    }
+
+    startButton.addEventListener('click', () => {
+      let total = 0;
+      bars.forEach(bar => {
+        const randomNumber = Math.floor(Math.random() * 1001);
+        const fillWidth = (randomNumber / 1000) * bar.offsetWidth;
+        bar.querySelector('.fillArea').style.width = `${fillWidth}px`;
+        total += randomNumber;
+      });
+
+      histogramData[total]++;
+      drawHistogram();
+    });
+
+    drawHistogram();
+  </script>
+</body>
+</html>

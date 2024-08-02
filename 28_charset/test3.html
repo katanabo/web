@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyScript 文字化け復元シミュレーター</title>
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        textarea, .output {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        .output {
+            white-space: pre-wrap; /* 改行を保持するためのスタイル */
+            background-color: #fff;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="input" rows="4" placeholder="ここに文字を入力してください..." oninput="simulateGarblingAndRestoration()"></textarea>
+    <div id="garbled-output" class="output"></div>
+    <div id="restored-output" class="output"></div>
+
+    <py-script>
+    import js
+
+    def simulate_garbling_and_restoration():
+        input_text = js.document.getElementById('input').value
+        encoded = input_text.encode('utf-8').decode('shift_jis', 'replace')
+        js.document.getElementById('garbled-output').textContent = encoded
+        restored = encoded.encode('shift_jis', 'replace').decode('utf-8', 'replace')
+        js.document.getElementById('restored-output').textContent = restored
+
+    js.simulateGarblingAndRestoration = simulate_garbling_and_restoration
+    </py-script>
+</body>
+</html>

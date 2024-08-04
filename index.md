@@ -47,7 +47,7 @@
 [剛体2](08_rigid_body/step5_rigid-move.html)
 [ギャラ記録くん1号](09_localstorage/index.html)
 [AIチャット](14_voicechat/interface.html)
-[Anykey](15_random_image/anykey.htmll)
+[Anykey](15_random_image/anykey.html)
 [booking](16_booking/booking.html)
 [gambling](18_gambling/test7.html)
 [タワーゲーム](20_kamereon_block/test04.html)

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulus Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            margin: 5px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            width: 80vw; /* 固定幅に設定 */
+            height: auto;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            text-align: center;
+            font-size: 18px;
+            color: red;
+            transition: all 0.2s ease-in-out;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 12px;
+            }
+
+            input[type="number"] {
+                width: 40px;
+                margin: 3px;
+                font-size: 14px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Modulus Table Generator</h1>
+    <div>
+        <label for="modA">a で割った余り:</label>
+        <input type="number" id="modA" value="3" min="1" inputmode="numeric" pattern="[0-9]*">
+        <label for="modB">b で割った余り:</label>
+        <input type="number" id="modB" value="5" min="1" inputmode="numeric" pattern="[0-9]*">
+        <button onclick="generateTable()">生成</button>
+    </div>
+    <div style="padding: 0 10vw;"> <!-- ここで左右に余白を追加 -->
+        <table id="modulusTable"></table>
+    </div>
+
+    <script>
+        let animationInProgress = false;
+        let animationTimeouts = [];
+
+        function generateTable() {
+            if (animationInProgress) {
+                resetTable(); // アニメーション中でもリセット
+            }
+
+            const modA = parseInt(document.getElementById('modA').value);
+            const modB = parseInt(document.getElementById('modB').value);
+            const table = document.getElementById('modulusTable');
+            table.innerHTML = ''; // テーブルをリセット
+            animationInProgress = true;
+
+            // テーブルのサイズに応じてセルの大きさを調整
+            const cellSize = Math.floor(80 / Math.max(modA, modB)) + 'vw'; // セルのサイズを固定幅内に収める
+
+            // テーブルヘッダーの作成
+            const headerRow = document.createElement('tr');
+            const emptyHeader = document.createElement('th');
+            emptyHeader.style.width = cellSize;
+            headerRow.appendChild(emptyHeader);
+
+            for (let i = 0; i < modB; i++) {
+                const th = document.createElement('th');
+                th.style.width = cellSize;
+                th.innerText = i;
+                headerRow.appendChild(th);
+            }
+            table.appendChild(headerRow);
+
+            // テーブルの行と列の作成
+            for (let i = 0; i < modA; i++) {
+                const row = document.createElement('tr');
+                const th = document.createElement('th');
+                th.style.width = cellSize;
+                th.innerText = i;
+                row.appendChild(th);
+
+                for (let j = 0; j < modB; j++) {
+                    const td = document.createElement('td');
+                    td.style.width = cellSize;
+                    td.innerText = '';
+                    row.appendChild(td);
+                }
+                table.appendChild(row);
+            }
+
+            // アニメーションでテーブルを埋める
+            let num = 0;
+            function fillTable() {
+                const row = num % modA;
+                const col = num % modB;
+                const cell = table.rows[row + 1].cells[col + 1];
+                cell.innerText = num;
+
+                num++;
+                if (num < modA * modB) {
+                    animationTimeouts.push(setTimeout(fillTable, 200)); // スピード調整
+                } else {
+                    animationInProgress = false; // アニメーション終了
+                }
+            }
+
+            fillTable();
+        }
+
+        function resetTable() {
+            // 現在のアニメーションをすべてキャンセル
+            animationTimeouts.forEach(timeout => clearTimeout(timeout));
+            animationTimeouts = [];
+            animationInProgress = false;
+            document.getElementById('modulusTable').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

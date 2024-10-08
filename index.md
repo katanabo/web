@@ -55,6 +55,8 @@
 [晩御飯どうする？](22_dinner/test01.html)
 [3DVD](07_furiko/dvd-01.html)
 [剰余埋め尽くし](30_joyo/test.html)
+[square](31_cross/test01.html)
+
 </article>
 <aside id="ToC"></aside>
 </div>

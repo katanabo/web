@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2桁の数の2乗アプリ</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+
+        #question {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        #answer {
+            font-size: 2em;
+            color: #007BFF;
+            display: none; /* 答えは最初は非表示 */
+        }
+    </style>
+</head>
+<body>
+
+<div id="content">
+    <div id="question">問題を表示する</div>
+    <div id="answer">答えを表示する</div>
+</div>
+
+<script>
+    const questionElement = document.getElementById('question');
+    const answerElement = document.getElementById('answer');
+    let isAnswerVisible = false; // フラグで答え表示状態を管理
+
+    // 問題生成
+    function generateProblem() {
+        const number = Math.floor(Math.random() * 90) + 10;  // 10～99のランダムな数
+        const square = number * number;
+        questionElement.textContent = `${number}² = ?`;
+        answerElement.textContent = `${number}² = ${square}`;
+        answerElement.style.display = 'none'; // 答えを隠す
+        isAnswerVisible = false; // 答えが非表示状態で初期化
+    }
+
+    // 画面をタップすると処理が進む
+    document.body.addEventListener('click', () => {
+        if (!isAnswerVisible) {
+            answerElement.style.display = 'block'; // 答えを表示
+            isAnswerVisible = true; // フラグを立てて答えが表示されていることを示す
+        } else {
+            generateProblem(); // 次の問題を生成
+        }
+    });
+
+    // 初回の問題を生成
+    generateProblem();
+</script>
+
+</body>
+</html>
